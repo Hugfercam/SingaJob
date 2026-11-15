@@ -1,4 +1,5 @@
 import { cookies, headers } from "next/headers";
+import { connection } from "next/server";
 
 import { getPrisma } from "@/lib/db";
 import type { Role } from "@/lib/generated/prisma/client";
@@ -125,6 +126,11 @@ export async function createSession(
  * caducado, inactivo o usuario desactivado) y borra la sesión inservible.
  */
 export async function readSession(): Promise<AuthContext | null> {
+  // Marca explícitamente la petición como dinámica antes de leer la hora:
+  // sin esto, Next 16 avisa de que `Date.now()` es un valor inestable durante
+  // el prerender parcial ("encountered the unstable value Date.now()").
+  await connection();
+
   const token = await readSessionToken();
 
   if (!token) {

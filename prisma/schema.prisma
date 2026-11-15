@@ -29,6 +29,8 @@ model Company {
   invitations Invitation[]
   clients     Client[]
   projects    Project[]
+  templates   Template[]
+  workOrders  WorkOrder[]
 
   @@map("companies")
 }
@@ -50,6 +52,9 @@ model User {
 
   company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   sessions Session[]
+
+  assignedWorkOrders WorkOrder[] @relation("AssignedWorkOrders")
+  createdWorkOrders  WorkOrder[] @relation("CreatedWorkOrders")
 
   @@index([companyId])
   @@map("users")
@@ -115,6 +120,8 @@ model Client {
   company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   projects Project[]
 
+  workOrders WorkOrder[]
+
   @@index([companyId, name])
   @@map("clients")
 }
@@ -135,7 +142,69 @@ model Project {
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
+  workOrders WorkOrder[]
+
   @@index([companyId])
   @@index([clientId])
   @@map("projects")
+}
+
+// Plantilla de parte: define qué campos se rellenan en un tipo de trabajo.
+// La definición vive en `fields` (JSON validado en código, ver D-008).
+model Template {
+  id          String   @id @default(cuid())
+  companyId   String
+  name        String
+  description String?
+  fields      Json     @default("[]")
+  archived    Boolean  @default(false)
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  workOrders WorkOrder[]
+
+  @@index([companyId, name])
+  @@map("templates")
+}
+
+enum WorkOrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// Parte de trabajo.
+// `fieldsSnapshot` es una copia de la definición de la plantilla en el momento
+// de crear el parte: editar la plantilla después no altera partes ya hechos.
+model WorkOrder {
+  id             String          @id @default(cuid())
+  companyId      String
+  clientId       String
+  projectId      String?
+  templateId     String?
+  title          String
+  status         WorkOrderStatus @default(PENDING)
+  fieldsSnapshot Json            @default("[]")
+  values         Json            @default("{}")
+  assignedToId   String?
+  createdById    String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project    Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  template   Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  assignedTo User?    @relation("AssignedWorkOrders", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdBy  User?    @relation("CreatedWorkOrders", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([companyId, status])
+  @@index([assignedToId])
+  @@index([clientId])
+  @@map("work_orders")
 }

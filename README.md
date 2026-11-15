@@ -56,14 +56,14 @@ Digitalizar el día a día del sector sin informático ni ERP, desde el móvil, 
 - [x] Alta de empresa y administrador, con sesión persistente
 - [x] Empleados con rol e invitación por enlace
 - [x] Clientes y proyectos (obras) con dirección
-- [ ] Plantillas de parte con campos tipados y 3 plantillas de ejemplo
-- [ ] Partes: crear desde plantilla, asignar, estados (pendiente → en curso → completado → firmado, y cancelado)
-- [ ] Checklist editable y fotos adjuntas
+- [x] Plantillas de parte con campos tipados (los ejemplos por oficio quedan pendientes)
+- [x] Partes: crear desde plantilla, asignar y estados (pendiente → en curso → completado, y cancelado)
+- [ ] Checklist editable y fotos adjuntas (las listas de comprobación ya existen; faltan las fotos)
 - [ ] Firma del cliente y del técnico
 - [ ] Albarán PDF con logo, envío por email y compartir desde el móvil
 - [ ] Fichaje de entrada/salida y registro de jornada exportable
 - [ ] Dashboard básico: partes por estado, horas, trabajos del mes
-- [ ] PWA instalable en el móvil y notificaciones push
+- [ ] PWA instalable en el móvil y notificaciones push (instalable ya; faltan las push)
 
 **Versión 1 (tras el beta)**
 - [ ] Presupuestos con líneas, IVA y PDF
@@ -124,9 +124,9 @@ App nativa si el campo lo exige, firma remota, presupuestos generados automátic
 
 ## 11. Estado y siguientes pasos
 
-- **Fase actual:** Desarrollo. T-001 a T-004 terminadas: base, autenticación con sesión persistente, invitaciones de empleados, y clientes con obras y estados. Todavía sin plantillas ni partes de trabajo.
+- **Fase actual:** Desarrollo. T-001 a T-005 terminadas: base, autenticación, invitaciones, clientes con obras, y plantillas con partes de trabajo que el técnico rellena y completa. Faltan el cierre del parte (fotos, firma, PDF) y el dashboard.
 - **Decisión pendiente:** estrategia de sincronización offline y hosting + PostgreSQL de producción.
-- **Siguiente paso:** T-005 — plantillas de parte y partes de trabajo.
+- **Siguiente paso:** T-006 — fotos, GPS, firma y PDF; después T-007 — dashboard y diseño.
 
 **Para probarlo:** sigue [docs/GUIA_PRUEBAS.md](docs/GUIA_PRUEBAS.md).
 

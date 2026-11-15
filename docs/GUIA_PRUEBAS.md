@@ -117,7 +117,51 @@ Si te pide contraseña, el rol de la aplicación es `signajob`.
 
 ---
 
-## 6. Prueba D — Permisos y aislamiento
+## 6. Prueba D — Plantillas y partes de trabajo
+
+**Crear la plantilla** (como administrador)
+
+1. Panel → **Plantillas** → "Nueva plantilla".
+2. Nombre: "Reforma de baño".
+3. "Añadir campo" y poner la etiqueta "Descripción del trabajo", marcando **Obligatorio**.
+4. Añadir otro campo "Observaciones".
+5. Guardar.
+
+**Esperado:** la plantilla aparece en el listado con "2 campos".
+
+Puedes cambiar el tipo de cada campo (texto, número, fecha, selección, casilla, lista de comprobación). En selección y lista hay que escribir las opciones separadas por comas.
+
+**Crear el parte**
+
+1. Panel → **Partes de trabajo** → "Nuevo parte".
+2. Título, cliente, obra (opcional), plantilla y a quién se asigna. Crear.
+
+**Esperado:** ficha del parte en estado **Pendiente**, con los campos de la plantilla y la dirección del cliente.
+
+**El flujo del técnico** (entrar con la cuenta asignada)
+
+1. En `/partes` solo debe aparecer ese parte.
+2. "Empezar el parte" → pasa a **En curso**.
+3. "Completar" sin rellenar → *"Antes de completar, rellena: …"*.
+4. Rellenar lo obligatorio → "Guardar" (aparece "Guardado.") → "Completar".
+
+**Esperado:** estado **Completado** con fecha de fin, y el parte queda bloqueado en solo lectura.
+
+**La copia de la plantilla** (lo más importante de esta prueba)
+
+1. Vuelve como administrador y añade un campo más a la plantilla.
+2. Abre el parte anterior.
+
+**Esperado:** el parte sigue mostrando **solo los campos que tenía al crearse**. Si apareciera el campo nuevo, un parte ya firmado podría cambiar de contenido: avísame.
+
+**Permisos**
+
+- Un técnico no ve los partes de otro ni los de otra empresa (se comprueba en el apartado siguiente).
+- Un técnico **no** ve el botón "Cancelar": cancelar es cosa de la oficina.
+
+---
+
+## 7. Prueba E — Permisos y aislamiento
 
 1. Cerrar sesión y entrar con `tecnico@electricidadsoler.es`.
 2. Intentar abrir `/clientes` directamente en la barra de direcciones.
@@ -130,7 +174,7 @@ Si te pide contraseña, el rol de la aplicación es `signajob`.
 
 ---
 
-## 7. Prueba E — Sesión y seguridad
+## 8. Prueba F — Sesión y seguridad
 
 - **Cerrar sesión** → vuelve a `/login` y `/panel` deja de ser accesible.
 - **Revocar sesiones desde la base** (simula cerrar sesión en todos los dispositivos):
@@ -145,7 +189,7 @@ Recargar `/panel` sin cerrar sesión en el navegador → debe redirigir a `/logi
 
 ---
 
-## 8. Prueba F — Instalable como PWA
+## 9. Prueba G — Instalable como PWA
 
 1. Abrir <http://localhost:3100> en Chrome.
 2. Icono de instalar en la barra de direcciones (o menú → "Instalar aplicación").
@@ -157,7 +201,7 @@ Recargar `/panel` sin cerrar sesión en el navegador → debe redirigir a `/logi
 
 ---
 
-## 9. Ver la base de datos (opcional)
+## 10. Ver la base de datos (opcional)
 
 ```powershell
 & "C:\Program Files\PostgreSQL\17\bin\psql.exe" -h 127.0.0.1 -U signajob -d signajob_dev
@@ -182,11 +226,19 @@ SELECT email, role, "acceptedAt", "revokedAt", "expiresAt" FROM invitations;
 SELECT c.name AS cliente, p.name AS obra, p.status
 FROM clients c LEFT JOIN projects p ON p."clientId" = c.id
 ORDER BY c.name;
+
+-- plantillas y partes
+SELECT name, jsonb_array_length(fields) AS campos FROM templates;
+SELECT title, status, "assignedToId", jsonb_array_length("fieldsSnapshot") AS campos
+FROM work_orders ORDER BY "createdAt" DESC;
+
+-- los valores del parte se guardan como JSON
+SELECT title, values FROM work_orders;
 ```
 
 ---
 
-## 10. Problemas comunes
+## 11. Problemas comunes
 
 | Síntoma | Causa y solución |
 |---|---|
@@ -200,7 +252,7 @@ ORDER BY c.name;
 
 ---
 
-## 11. Empezar de cero (destructivo)
+## 12. Empezar de cero (destructivo)
 
 Si quieres una base limpia, **esto borra todos los datos** de desarrollo:
 
@@ -214,6 +266,6 @@ Borra la base `signajob_dev`, la vuelve a crear y aplica todas las migraciones. 
 
 ## Qué está probado y qué no
 
-**Funciona y está verificado:** registro, login, logout, sesión persistente, invitaciones (caducidad, uso único, revocación), clientes con búsqueda, obras con estados, permisos por rol y aislamiento entre empresas.
+**Funciona y está verificado:** registro, login, logout, sesión persistente, invitaciones (caducidad, uso único, revocación), clientes con búsqueda, obras con estados, plantillas con campos tipados, partes asignados que el técnico rellena y completa, permisos por rol y aislamiento entre empresas.
 
-**Todavía no existe:** partes de trabajo, plantillas, fotos, firma del cliente, PDF, fichaje, presupuestos, notificaciones push y recuperación de contraseña por email.
+**Todavía no existe:** fotos, GPS, firma del cliente, PDF y envío por email, fichaje, presupuestos, notificaciones push, dashboard y recuperación de contraseña por email.

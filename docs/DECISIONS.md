@@ -136,4 +136,21 @@
   - **Regla para el futuro:** cualquier código que necesite la sesión usa `readSession()`; nadie debe leer la cookie con `cookies()`. Escribirla sigue siendo con `cookies()` y solo en acciones o route handlers.
   - Se parsea la cabecera a mano (formato `nombre=valor; …` de RFC 6265). Es código propio que hay que mantener, pero es estable y está cubierto por la verificación en navegador.
   - Si Next corrige el fallo, se puede volver a `cookies()`; no urge.
+  - **Añadido en T-005:** `readSession()` llama a `connection()` antes de leer la hora. Sin eso, Next 16 marcaba `Date.now()` como valor inestable durante el prerender parcial y llenaba la consola de errores en una ruta que funcionaba. Comprobado que las Server Actions siguen funcionando con esa llamada.
 - **Referencia:** `lib/auth/session.ts`; `docs/tasks/T-003-invitaciones.md` §8.
+
+### D-008 — Campos de plantilla y valores de parte en JSON, validados en código
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** Una plantilla de parte define campos de distinto tipo (texto, número, fecha, selección, casilla, checklist) y cada parte guarda valores para esos campos. Había que elegir entre normalizar todo en tablas o guardarlo como documento.
+- **Opciones estudiadas:**
+  - *JSON con validación en código:* `Template.fields`, `WorkOrder.fieldsSnapshot` y `WorkOrder.values` como `Json`. Una plantilla y un parte son una fila. La validación se escribe una vez, tipada y con pruebas.
+  - *Tablas normalizadas (`TemplateField`, `WorkOrderValue`):* integridad en la base y SQL directo para agregar, a cambio de dos tablas más, más joins, más transacciones y migraciones para cada cambio de campo.
+- **Decisión:** JSON. La definición de la plantilla y los valores del parte viven en columnas `Json`; `lib/work-orders/fields.ts` valida tipos y normaliza antes de escribir. Nada que llegue del cliente se guarda sin pasar por ahí.
+- **Consecuencias:**
+  - Editar una plantilla es una sola escritura y leer un parte es una sola fila.
+  - **El parte copia la definición al crearse** (`fieldsSnapshot`): editar la plantilla después no altera partes ya hechos ni firmados.
+  - Un JSON mal formado solo puede entrar si alguien se salta la validación; por eso toda escritura pasa por `parseFieldDefinitions` y `validateValues`.
+  - Si un informe necesita sumar o filtrar por un campo concreto, se añade una columna generada o se extrae en la consulta. No hace falta normalizar para eso; si algún día hiciera falta, los datos ya están y se pueden migrar.
+- **Referencia:** `lib/work-orders/fields.ts`; `docs/tasks/T-005-plantillas-y-partes.md` §4.

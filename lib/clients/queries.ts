@@ -118,3 +118,20 @@ export async function countClientsAndProjects(companyId: string) {
 
   return { clients, projects };
 }
+
+export type ProjectOption = {
+  id: string;
+  name: string;
+  clientId: string;
+};
+
+/** Obras de la empresa, para elegir al crear un parte. */
+export async function listProjectOptions(
+  companyId: string,
+): Promise<ProjectOption[]> {
+  return getPrisma().project.findMany({
+    where: tenantScope(companyId),
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, clientId: true },
+  });
+}
