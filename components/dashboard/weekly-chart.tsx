@@ -69,7 +69,7 @@ export function WeeklyChart({ summary }: { summary: WeekSummary }) {
                 width={barWidth}
                 height={currentHeight}
                 rx={3}
-                className={day.current === 0 ? "fill-line/70" : "fill-brand"}
+                className={day.current === 0 ? "fill-line/70" : "fill-accent"}
               />
               {day.current > 0 ? (
                 <text

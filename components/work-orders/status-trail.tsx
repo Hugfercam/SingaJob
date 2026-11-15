@@ -39,7 +39,7 @@ export function StatusTrail({ status }: { status: WorkOrderStatus }) {
           strokeLinecap="round"
           pathLength={100}
           strokeDasharray={`${progress} 100`}
-          className={status === "CANCELLED" ? "stroke-danger" : "stroke-brand"}
+          className={status === "CANCELLED" ? "stroke-danger" : "stroke-accent"}
         />
 
         {STEPS.map((step, stepIndex) => {
@@ -52,9 +52,9 @@ export function StatusTrail({ status }: { status: WorkOrderStatus }) {
               cx={x}
               cy={stepIndex === 1 ? 13 : 14}
               r={4.5}
-              className={reached ? "fill-brand" : "fill-surface"}
+              className={reached ? "fill-accent" : "fill-surface"}
               strokeWidth={2}
-              stroke={reached ? "var(--color-brand)" : "var(--color-line)"}
+              stroke={reached ? "var(--color-accent)" : "var(--color-line)"}
             />
           );
         })}

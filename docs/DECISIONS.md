@@ -192,3 +192,20 @@
   - Sin tema oscuro: si algún día hay uso nocturno real, se añade después y habrá que revisar contrastes de todas las pantallas.
   - Todo requisito de accesibilidad (contraste AA, 44 px, teclado, 200 % de zoom) es criterio de aceptación, no recomendación.
 - **Referencia:** `docs/tasks/T-007-dashboard-y-diseno.md` §4 y §5.
+
+### D-011 — La paleta pasa a ser la del logotipo (marino y turquesa)
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** La identidad visual (D-010) se definió con un verde profundo porque no existía logo. Con el logotipo —azul marino con degradado a turquesa— la aplicación y la marca habrían mostrado dos identidades distintas en la misma pantalla.
+- **Opciones estudiadas:**
+  - *Mantener el verde en la app y el logo en color solo en la landing:* más barato, pero el producto y la marca no comparten color.
+  - *Adoptar la paleta del logo:* una sola identidad; hay que revisar contrastes y aceptar que el turquesa no sirve para texto.
+  - *Dejar ambos:* descartada, dos verdes y un azul compitiendo.
+- **Decisión:** el **marino `#002C69`** sustituye al verde como tinta de marca (botones, enlaces, foco, navegación activa) y el **turquesa `#029F91`** entra como acento para lo que se mueve (trazos, barras, progreso). El papel cálido se mantiene.
+- **Consecuencias:**
+  - Contrastes recalculados: todo el texto sigue en AA (marino sobre papel, 12,22:1).
+  - **El turquesa no se usa para texto pequeño**: 3,00:1 sobre papel. Solo gráficos y rellenos, con texto marino encima.
+  - `theme_color` del manifest y del navegador pasa a marino.
+  - Esta decisión sustituye únicamente la **paleta** de D-010; el resto (dos densidades, un tema claro, tipografía y accesibilidad como criterio) sigue vigente.
+- **Referencia:** `app/globals.css` (`@theme`), `docs/tasks/T-007-dashboard-y-diseno.md` §15.

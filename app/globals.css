@@ -12,9 +12,13 @@
   --color-ink: #1c1a17;
   --color-ink-soft: #57534e;
   --color-line: #e3ded3;
-  --color-brand: #14532d;
-  --color-brand-soft: #dce9e0;
-  --color-ok: #166534;
+  /* Paleta tomada del logotipo (D-011): marino como tinta de marca y turquesa
+   * como acento de datos. El turquesa no vale para texto pequeño (3:1). */
+  --color-brand: #002c69;
+  --color-brand-soft: #e4edf7;
+  --color-accent: #029f91;
+  --color-accent-soft: #d8efeb;
+  --color-ok: #00786d;
   --color-warn: #9a3412;
   --color-danger: #991b1b;
 

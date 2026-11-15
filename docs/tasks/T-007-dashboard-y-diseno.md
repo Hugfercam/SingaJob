@@ -230,20 +230,25 @@ SVG escrito a mano para barras, líneas y anillos: cero dependencias, cero JavaS
 
 ### Contraste de los tokens (calculado con la fórmula WCAG 2.2)
 
+Paleta definitiva tomada del logotipo (D-011): marino para la marca y turquesa
+para los datos.
+
 | Par | Colores | Ratio | Resultado |
 |---|---|---|---|
-| Tinta sobre papel | `#1C1A17` / `#F7F4ED` | 15,81:1 | AA |
-| Tinta suave sobre papel | `#57534E` / `#F7F4ED` | 6,95:1 | AA |
-| Marca sobre papel | `#14532D` / `#F7F4ED` | 8,29:1 | AA |
-| Papel sobre marca (botón) | `#F7F4ED` / `#14532D` | 8,29:1 | AA |
-| Marca sobre marca suave (navegación activa) | `#14532D` / `#DCE9E0` | 7,28:1 | AA |
-| Tinta suave sobre tarjeta | `#57534E` / `#FFFFFF` | 7,63:1 | AA |
+| Marino sobre papel | `#002C69` / `#F7F4ED` | 12,22:1 | AA |
+| Marino sobre blanco (tarjeta) | `#002C69` / `#FFFFFF` | 13,42:1 | AA |
+| Papel sobre marino (botón) | `#F7F4ED` / `#002C69` | 12,22:1 | AA |
+| Marino sobre azul suave (navegación activa) | `#002C69` / `#E4EDF7` | 11,35:1 | AA |
+| Tinta suave sobre azul suave | `#57534E` / `#E4EDF7` | 6,45:1 | AA |
+| Marino sobre turquesa suave | `#002C69` / `#D8EFEB` | 11,17:1 | AA |
+| Éxito sobre papel | `#00786D` / `#F7F4ED` | 4,89:1 | AA |
+| Papel sobre éxito | `#F7F4ED` / `#00786D` | 4,89:1 | AA |
 | Aviso sobre papel | `#9A3412` / `#F7F4ED` | 6,65:1 | AA |
 | Peligro sobre papel | `#991B1B` / `#F7F4ED` | 7,57:1 | AA |
-| Blanco sobre aviso (contador) | `#FFFFFF` / `#9A3412` | 7,31:1 | AA |
-| Tinta suave sobre línea (etiqueta neutra) | `#57534E` / `#E3DED3` | 5,69:1 | AA |
+| **Turquesa sobre papel (solo gráficos)** | `#029F91` / `#F7F4ED` | 3,00:1 | **No apto para texto pequeño** |
 
-Ningún par baja de 4,5:1, así que no hay que tocar la paleta.
+Todo texto cumple AA. El turquesa queda reservado para trazos, barras y rellenos:
+se usa con texto marino encima, nunca como color de letra pequeña.
 
 | Prueba / comando | Resultado | Evidencia / comentario |
 |---|---|---|
