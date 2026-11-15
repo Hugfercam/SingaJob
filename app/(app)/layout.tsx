@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { connection } from "next/server";
 
+import { OfflineIndicator } from "@/components/offline/offline-indicator";
 import { requireSession } from "@/lib/auth/guards";
 
 /**
@@ -28,5 +29,10 @@ export default async function AppLayout({
   await connection();
   await requireSession();
 
-  return <>{children}</>;
+  return (
+    <>
+      <OfflineIndicator />
+      {children}
+    </>
+  );
 }

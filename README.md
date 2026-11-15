@@ -58,9 +58,9 @@ Digitalizar el día a día del sector sin informático ni ERP, desde el móvil, 
 - [x] Clientes y proyectos (obras) con dirección
 - [x] Plantillas de parte con campos tipados (los ejemplos por oficio quedan pendientes)
 - [x] Partes: crear desde plantilla, asignar y estados (pendiente → en curso → completado, y cancelado)
-- [ ] Checklist editable y fotos adjuntas (las listas de comprobación ya existen; faltan las fotos)
-- [ ] Firma del cliente y del técnico
-- [ ] Albarán PDF con logo, envío por email y compartir desde el móvil
+- [x] Checklist editable, fotos adjuntas y firma del cliente y del técnico
+- [x] Albarán PDF con logo y datos, descarga y compartir desde el móvil (envío por email pendiente)
+- [x] Trabajo sin conexión: los cambios del parte se guardan en el dispositivo y se sincronizan al volver la red
 - [ ] Fichaje de entrada/salida y registro de jornada exportable
 - [ ] Dashboard básico: partes por estado, horas, trabajos del mes
 - [ ] PWA instalable en el móvil y notificaciones push (instalable ya; faltan las push)
@@ -124,9 +124,9 @@ App nativa si el campo lo exige, firma remota, presupuestos generados automátic
 
 ## 11. Estado y siguientes pasos
 
-- **Fase actual:** Desarrollo. T-001 a T-005 terminadas: base, autenticación, invitaciones, clientes con obras, y plantillas con partes de trabajo que el técnico rellena y completa. Faltan el cierre del parte (fotos, firma, PDF) y el dashboard.
-- **Decisión pendiente:** estrategia de sincronización offline y hosting + PostgreSQL de producción.
-- **Siguiente paso:** T-006 — fotos, GPS, firma y PDF; después T-007 — dashboard y diseño.
+- **Fase actual:** Desarrollo. T-001 a T-006 terminadas: base, autenticación, invitaciones, clientes con obras, plantillas y partes, cierre con fotos/firma/PDF y modo sin conexión. Falta el dashboard y el diseño.
+- **Decisión pendiente:** hosting + PostgreSQL de producción y envío de emails (Resend).
+- **Siguiente paso:** T-007 — dashboard del administrador y diseño.
 
 **Para probarlo:** sigue [docs/GUIA_PRUEBAS.md](docs/GUIA_PRUEBAS.md).
 

@@ -31,6 +31,7 @@ model Company {
   projects    Project[]
   templates   Template[]
   workOrders  WorkOrder[]
+  attachments Attachment[]
 
   @@map("companies")
 }
@@ -193,6 +194,10 @@ model WorkOrder {
   createdById    String?
   startedAt      DateTime?
   completedAt    DateTime?
+  startLatitude  Float?
+  startLongitude Float?
+  endLatitude    Float?
+  endLongitude   Float?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -203,8 +208,37 @@ model WorkOrder {
   assignedTo User?    @relation("AssignedWorkOrders", fields: [assignedToId], references: [id], onDelete: SetNull)
   createdBy  User?    @relation("CreatedWorkOrders", fields: [createdById], references: [id], onDelete: SetNull)
 
+  attachments Attachment[]
+
   @@index([companyId, status])
   @@index([assignedToId])
   @@index([clientId])
   @@map("work_orders")
+}
+
+enum AttachmentKind {
+  PHOTO
+  SIGNATURE_CLIENT
+  SIGNATURE_TECHNICIAN
+}
+
+// Foto o firma de un parte. El archivo vive en el almacenamiento (disco local
+// por ahora, R2 después) y aquí solo se guarda su referencia.
+model Attachment {
+  id          String         @id @default(cuid())
+  companyId   String
+  workOrderId String
+  kind        AttachmentKind
+  fileName    String
+  mimeType    String
+  sizeBytes   Int
+  storageKey  String         @unique
+  createdById String?
+  createdAt   DateTime       @default(now())
+
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  @@index([workOrderId, kind])
+  @@map("attachments")
 }

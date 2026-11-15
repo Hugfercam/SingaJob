@@ -1,18 +1,21 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState } from "react";
 
-import {
-  saveWorkOrderValues,
-  type ValuesState,
-} from "@/lib/work-orders/actions";
 import type {
   FieldDefinition,
   WorkOrderValues,
 } from "@/lib/work-orders/fields";
+import { submit } from "@/lib/offline/submit";
 
 const fieldClass =
   "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 disabled:bg-neutral-100 disabled:text-neutral-500";
+
+type State =
+  | { status: "idle" | "saving" }
+  | { status: "saved" }
+  | { status: "queued" }
+  | { status: "rejected"; error: string; errors?: Record<string, string> };
 
 function Control({
   field,
@@ -146,16 +149,52 @@ export function WorkOrderFields({
   values: WorkOrderValues;
   readOnly: boolean;
 }) {
-  const [state, formAction, pending] = useActionState(
-    saveWorkOrderValues,
-    null as ValuesState,
-  );
+  const [state, setState] = useState<State>({ status: "idle" });
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const raw: Record<string, unknown> = {};
+
+    for (const field of fields) {
+      const name = `field_${field.id}`;
+
+      if (field.type === "CHECKBOX") {
+        raw[field.id] = formData.get(name) === "on";
+      } else if (field.type === "CHECKLIST") {
+        raw[field.id] = formData
+          .getAll(name)
+          .filter((value): value is string => typeof value === "string");
+      } else {
+        raw[field.id] = String(formData.get(name) ?? "");
+      }
+    }
+
+    setState({ status: "saving" });
+
+    const result = await submit({
+      url: `/api/partes/${workOrderId}/valores`,
+      body: { kind: "json", data: { values: raw } },
+      label: "campos del parte",
+    });
+
+    if (result.status === "saved") {
+      setState({ status: "saved" });
+    } else if (result.status === "queued") {
+      setState({ status: "queued" });
+    } else {
+      setState({
+        status: "rejected",
+        error: result.error,
+        errors: result.errors,
+      });
+    }
+  }
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <input type="hidden" name="workOrderId" value={workOrderId} />
-
-      {state?.status === "error" ? (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {state.status === "rejected" ? (
         <p
           role="alert"
           className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
@@ -164,9 +203,15 @@ export function WorkOrderFields({
         </p>
       ) : null}
 
-      {state?.status === "saved" ? (
+      {state.status === "saved" ? (
         <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
           Guardado.
+        </p>
+      ) : null}
+
+      {state.status === "queued" ? (
+        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          Guardado en el dispositivo. Se enviará al recuperar la conexión.
         </p>
       ) : null}
 
@@ -177,8 +222,8 @@ export function WorkOrderFields({
       ) : null}
 
       {fields.map((field) => {
-        const fieldErrors = state?.status === "error" ? state.errors : undefined;
-        const error = fieldErrors?.[field.id];
+        const error =
+          state.status === "rejected" ? state.errors?.[field.id] : undefined;
 
         return (
           <div key={field.id} className="flex flex-col gap-1">
@@ -212,10 +257,10 @@ export function WorkOrderFields({
       {readOnly ? null : (
         <button
           type="submit"
-          disabled={pending}
+          disabled={state.status === "saving"}
           className="rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
         >
-          {pending ? "Guardando…" : "Guardar"}
+          {state.status === "saving" ? "Guardando…" : "Guardar"}
         </button>
       )}
     </form>

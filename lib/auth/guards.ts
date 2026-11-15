@@ -9,7 +9,7 @@ import { readSession, type AuthContext } from "./session";
  * para que ninguna página de dentro pueda renderizarse sin usuario.
  */
 export async function requireSession(): Promise<AuthContext> {
-  const auth = await readSession();
+  const auth = await readSession({ requestTime: true });
 
   if (!auth) {
     redirect("/login");

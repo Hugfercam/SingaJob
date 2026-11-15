@@ -6,16 +6,16 @@
 ## Última actualización
 - Fecha: 2026-11-15
 - Rama actual: `main`
-- Fase: Desarrollo — **T-001 a T-005 terminadas**
-- Estado: base, autenticación, invitaciones, clientes/obras y partes de trabajo, todo verificado
+- Fase: Desarrollo — **T-001 a T-006 terminadas**
+- Estado: base, autenticación, invitaciones, clientes/obras, partes, cierre con fotos/firma/PDF y modo sin conexión, todo verificado
 
 ## Objetivo actual
 Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicación Next.js full-stack (panel + campo), con PostgreSQL y Prisma.
 
 ## Tarea activa
-- ID / enlace a `docs/tasks/`: ninguna abierta. [T-001](tasks/T-001-arranque-proyecto.md), [T-002](tasks/T-002-autenticacion.md), [T-003](tasks/T-003-invitaciones.md), [T-004](tasks/T-004-clientes-proyectos.md) y [T-005](tasks/T-005-plantillas-y-partes.md) están **terminadas**.
+- ID / enlace a `docs/tasks/`: ninguna abierta. [T-001](tasks/T-001-arranque-proyecto.md), [T-002](tasks/T-002-autenticacion.md), [T-003](tasks/T-003-invitaciones.md), [T-004](tasks/T-004-clientes-proyectos.md), [T-005](tasks/T-005-plantillas-y-partes.md) y [T-006](tasks/T-006-cierre-y-offline.md) están **terminadas**.
 - Estado: sin bloqueos técnicos
-- Próximo paso concreto: T-006 — fotos, GPS, firma del cliente y PDF; después T-007 — dashboard y diseño
+- Próximo paso concreto: T-007 — dashboard del administrador y diseño
 - Guía para probar a mano: [GUIA_PRUEBAS.md](GUIA_PRUEBAS.md)
 
 ## Hechos verificados
@@ -32,8 +32,11 @@ Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicació
 - `npm run hash-password -- "..."` genera el hash de una contraseña nueva para resetearla en local (no hay recuperación por email).
 - Plantillas y partes (T-005): tablas `templates` y `work_orders`; campos en JSON validados en código (D-008) y copia de la definición en cada parte. Verificado en navegador: crear plantilla, crear parte asignado, empezar, completar con y sin campos obligatorios, y aislamiento entre técnicos.
 - `readSession()` llama a `connection()`: sin eso, Next 16 avisa de `Date.now()` inestable durante el prerender parcial.
+- Cierre y modo sin conexión (T-006): adjuntos en `data/attachments` servidos por `GET /api/adjuntos/[id]` (con sesión), albarán en PDF con React PDF, y cola en IndexedDB que se reproduce al volver la red (D-009).
+- **Regla de escritura:** lo que el técnico hace en obra va por `/api/partes/…` y se encola; lo de oficina sigue en Server Actions.
 - `users.email` es único **global** (D-006): pendiente resolver cómo afecta a las invitaciones.
-- **Datos de prueba en la base de desarrollo:** empresas `Reformas Peña S.L.` (un administrador y una técnica) y `Electricidad Soler` (un técnico), una invitación pendiente para `ana@reformaspena.es`, dos clientes con una obra, la plantilla "Reforma de baño" y un parte completado. Se pueden borrar sin tocar el código.
+- **Datos de prueba en la base de desarrollo:** empresas `Reformas Peña S.L.` (un administrador y una técnica) y `Electricidad Soler` (un técnico), dos clientes con una obra, la plantilla "Reforma de baño" y tres partes (uno completado con foto y GPS, otro completado desde la cola sin conexión). Se pueden borrar sin tocar el código.
+- **Adjuntos locales:** viven en `data/attachments/` (ignorado por Git). Borrar esa carpeta deja los registros sin archivo.
 - `psql` no está en el `PATH`: usar `C:\Program Files\PostgreSQL\17\bin\psql.exe`. Contraseña del superusuario local: `postgres`; rol de la app: `signajob`.
 
 ## Cambios locales o trabajo sin integrar
@@ -50,6 +53,7 @@ Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicació
 | Invitaciones de extremo a extremo | Correcto | 2026-11-15: navegador real; caducidad comprobada con un token de control |
 | Clientes y obras de extremo a extremo | Correcto | 2026-11-15: alta, búsqueda por teléfono, edición y cambio de estado |
 | Plantillas y partes de extremo a extremo | Correcto | 2026-11-15: plantilla, parte asignado, estados, obligatorios y copia congelada |
+| Cierre y sin conexión | Correcto | 2026-11-15: fotos, GPS, PDF válido y valor guardado con el servidor parado que sincronizó al volver |
 | Migraciones | Correcto | 2026-11-15: al día |
 
 ## Bloqueos, riesgos o decisiones pendientes

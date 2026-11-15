@@ -154,3 +154,23 @@
   - Un JSON mal formado solo puede entrar si alguien se salta la validación; por eso toda escritura pasa por `parseFieldDefinitions` y `validateValues`.
   - Si un informe necesita sumar o filtrar por un campo concreto, se añade una columna generada o se extrae en la consulta. No hace falta normalizar para eso; si algún día hiciera falta, los datos ya están y se pueden migrar.
 - **Referencia:** `lib/work-orders/fields.ts`; `docs/tasks/T-005-plantillas-y-partes.md` §4.
+
+### D-009 — El parte se edita por API con cola offline, y los adjuntos van por un adaptador
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** Para trabajar sin conexión hay que poder encolar cambios. Una Server Action no se puede guardar y reproducir después: su identificador y su cuerpo viven en el bundle y en el protocolo de Next. Además, las fotos y firmas necesitan un sitio donde guardarse.
+- **Opciones estudiadas:**
+  - *Server Actions para todo:* cómodo con conexión, imposible de encolar sin conexión.
+  - *Rutas de API para los cambios del parte:* el cliente guarda la operación y la reproduce cuando vuelve la red. Requiere sacar la lógica a un servicio compartido.
+  - *Adjuntos en la base (bytea) o en R2:* la base se hincha; R2 exige credenciales que no existen aún.
+- **Decisión:**
+  1. Los cambios del parte (valores, estado, fotos, firmas) van por **rutas de API** con la lógica en `lib/work-orders/service.ts` y `lib/attachments/service.ts`. La creación del parte sigue siendo Server Action: es trabajo de oficina y siempre con conexión.
+  2. Las operaciones se **encolan en IndexedDB antes de intentar la red**, se reproducen en orden y se descartan solo si el servidor responde 4xx (reintentar no arreglaría nada).
+  3. Los adjuntos se guardan en **disco local** detrás de `lib/attachments/storage.ts`, con clave estable por operación (lo que da idempotencia).
+- **Consecuencias:**
+  - Sin conexión se puede seguir trabajando; el servidor recibe todo al volver, sin duplicar fotos.
+  - Hay **dos caminos de escritura** (acciones para lo de oficina, API para el parte). La regla para no equivocarse: si el técnico lo puede hacer en obra, va por API y con cola.
+  - El almacenamiento en disco no sirve para producción tal cual: hace falta un volumen persistente o cambiar el adaptador a R2.
+  - El service worker solo se registra en producción para no pelear con el recargado en caliente.
+- **Referencia:** `lib/offline/`, `lib/work-orders/service.ts`, `docs/tasks/T-006-cierre-y-offline.md` §4.

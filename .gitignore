@@ -44,6 +44,9 @@ yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
 
+# Archivos subidos (fotos y firmas) del entorno local
+/data/
+
 # Prisma
 prisma/*.db
 prisma/*.db-journal

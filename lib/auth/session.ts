@@ -125,11 +125,15 @@ export async function createSession(
  * Devuelve `null` ante cualquier anomalía (sin cookie, token desconocido,
  * caducado, inactivo o usuario desactivado) y borra la sesión inservible.
  */
-export async function readSession(): Promise<AuthContext | null> {
-  // Marca explícitamente la petición como dinámica antes de leer la hora:
-  // sin esto, Next 16 avisa de que `Date.now()` es un valor inestable durante
-  // el prerender parcial ("encountered the unstable value Date.now()").
-  await connection();
+export async function readSession(
+  options: { requestTime?: boolean } = {},
+): Promise<AuthContext | null> {
+  // `connection()` marca la petición como dinámica y evita el aviso de Next 16
+  // sobre `Date.now()` en el prerender parcial. Solo se llama al leer la sesión
+  // durante el render: en las Route Handlers esa API no aplica.
+  if (options.requestTime) {
+    await connection();
+  }
 
   const token = await readSessionToken();
 

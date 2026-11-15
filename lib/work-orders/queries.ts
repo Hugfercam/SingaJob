@@ -64,6 +64,12 @@ export async function listWorkOrders(
   }));
 }
 
+export type WorkOrderAttachment = {
+  id: string;
+  kind: "PHOTO" | "SIGNATURE_CLIENT" | "SIGNATURE_TECHNICIAN";
+  fileName: string;
+};
+
 export type WorkOrderDetail = {
   id: string;
   title: string;
@@ -79,6 +85,9 @@ export type WorkOrderDetail = {
   startedAt: Date | null;
   completedAt: Date | null;
   createdAt: Date;
+  startCoordinates: { latitude: number; longitude: number } | null;
+  endCoordinates: { latitude: number; longitude: number } | null;
+  attachments: WorkOrderAttachment[];
 };
 
 export async function getWorkOrder(
@@ -101,10 +110,18 @@ export async function getWorkOrder(
       startedAt: true,
       completedAt: true,
       createdAt: true,
+      startLatitude: true,
+      startLongitude: true,
+      endLatitude: true,
+      endLongitude: true,
       client: { select: { id: true, name: true, address: true } },
       project: { select: { name: true } },
       template: { select: { name: true } },
       assignedTo: { select: { name: true } },
+      attachments: {
+        orderBy: { createdAt: "asc" },
+        select: { id: true, kind: true, fileName: true },
+      },
     },
   });
 
@@ -130,6 +147,18 @@ export async function getWorkOrder(
     startedAt: workOrder.startedAt,
     completedAt: workOrder.completedAt,
     createdAt: workOrder.createdAt,
+    startCoordinates:
+      workOrder.startLatitude !== null && workOrder.startLongitude !== null
+        ? {
+            latitude: workOrder.startLatitude,
+            longitude: workOrder.startLongitude,
+          }
+        : null,
+    endCoordinates:
+      workOrder.endLatitude !== null && workOrder.endLongitude !== null
+        ? { latitude: workOrder.endLatitude, longitude: workOrder.endLongitude }
+        : null,
+    attachments: workOrder.attachments,
   };
 }
 
