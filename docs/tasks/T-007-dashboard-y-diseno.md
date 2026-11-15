@@ -209,6 +209,12 @@ SVG escrito a mano para barras, líneas y anillos: cero dependencias, cero JavaS
 - **Hoy** rehecha: saludo con contexto, cifras, avisos, actividad de la semana, empresa y últimos partes.
 - Tabla de contraste calculada (§9) con los diez pares de tokens.
 
+**Ajuste tras revisión del usuario (2026-11-15):**
+
+- **Fuera el subrayado con el trazo de firma bajo las cabeceras.** Repetido en cada sección era adorno y contradecía el principio de "cero decoración que no informa". El trazo queda solo donde comunica: progreso del parte y sello al cerrarlo.
+- **Más densidad visual** (dirección A, aprobada): iconos propios por cifra (`components/ui/icons.tsx`), números más grandes sobre fondo teñido según estado, y gráfica semanal con la semana anterior en gris claro para comparar de un vistazo.
+- El saludo muestra además los partes completados de la semana.
+
 **Pendiente (siguiente paso):**
 
 - Migrar a los componentes nuevos las pantallas que siguen con los estilos anteriores: ficha de parte, equipo, plantillas, invitación, registro y home pública.
