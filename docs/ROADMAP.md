@@ -5,11 +5,12 @@ sesiones. No es una promesa de fechas: es una lista de intenciones aprobadas.
 
 ## Orden inmediato
 
-1. **T-007 — Terminar el rediseño.** Migrar a los componentes nuevos las
-   pantallas que faltan: ficha de parte, equipo, plantillas, invitación,
-   registro y home pública.
-2. **Pulido del albarán.** Técnico sin nombre cuando el parte no está asignado,
-   CIF y dirección del emisor, firmas con nombre y fecha, logo de la empresa.
+1. **Logo y paleta.** El logotipo ya está en `public/brand/` y los iconos PWA
+   regenerados. Falta decidir si la interfaz adopta el azul marino y el turquesa
+   del logo o mantiene el verde actual (decisión pendiente).
+2. **T-008 — Landing pública.** Ficha creada en `docs/tasks/T-008-landing.md`.
+   Referencia: la landing de otro proyecto del usuario ("e Tierra"). Debe ser
+   igual o mejor, con la identidad del producto.
 3. **Lighthouse** sobre la compilación de producción, con el diseño cerrado.
 
 ## Aprobado para después (2026-11-15)
