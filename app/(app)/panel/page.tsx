@@ -75,7 +75,7 @@ export default async function HomePage() {
         <div className="grid grid-cols-3 gap-2">
           <Stat label="En curso" value={counts.inProgress} tone="active" />
           <Stat label="Pendientes" value={counts.pending} />
-          <Stat label="Completados" value={counts.completed} />
+          <Stat label="Completados" value={counts.completed} tone="done" />
         </div>
       </section>
 

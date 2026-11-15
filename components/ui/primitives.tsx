@@ -1,7 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-import { SignatureRule } from "./signature";
-
 /* ---------- Botones ---------- */
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
@@ -116,19 +114,23 @@ export function Stat({
   hint?: string;
   tone?: Tone;
 }) {
-  const emphasis =
-    tone === "active"
-      ? "border-brand/30 bg-brand-soft/50"
-      : tone === "danger"
-        ? "border-danger/30 bg-danger/5"
-        : "border-line bg-surface";
+  const styles: Record<Tone, string> = {
+    neutral: "border-line bg-surface",
+    active: "border-brand/25 bg-brand-soft/70",
+    done: "border-brand/20 bg-brand-soft/40",
+    danger: "border-danger/25 bg-danger/5",
+  };
+
+  const valueColor = tone === "active" ? "text-brand" : "text-ink";
 
   return (
-    <div className={`flex flex-col gap-0.5 rounded-card border px-3 py-2 ${emphasis}`}>
-      <span className="text-xs font-medium tracking-wide text-ink-soft uppercase">
+    <div
+      className={`flex flex-col gap-1 rounded-card border px-3.5 py-3 ${styles[tone]}`}
+    >
+      <span className="text-[11px] leading-tight font-semibold tracking-wider text-ink-soft uppercase">
         {label}
       </span>
-      <span className="tabular text-2xl leading-tight font-semibold text-ink">
+      <span className={`tabular text-3xl leading-none font-semibold ${valueColor}`}>
         {value}
       </span>
       {hint ? <span className="text-xs text-ink-soft">{hint}</span> : null}
@@ -138,6 +140,13 @@ export function Stat({
 
 /* ---------- Títulos de sección ---------- */
 
+/**
+ * Título de sección, sin adornos.
+ *
+ * Aquí hubo un subrayado con el trazo de firma: repetido bajo cada cabecera se
+ * convirtió en decoración que no informa. El trazo queda para donde significa
+ * algo (progreso de un parte y sello al firmarlo).
+ */
 export function SectionTitle({
   children,
   action,
@@ -146,12 +155,11 @@ export function SectionTitle({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display text-lg font-semibold text-ink">{children}</h2>
-        {action}
-      </div>
-      <SignatureRule className="w-16 opacity-70" />
+    <div className="flex items-end justify-between gap-3">
+      <h2 className="font-display text-xl leading-tight font-semibold text-ink">
+        {children}
+      </h2>
+      {action}
     </div>
   );
 }
