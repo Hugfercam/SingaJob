@@ -50,11 +50,11 @@ export default async function TeamPage() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-1">
-        <p className="text-sm font-medium tracking-wide text-emerald-800 uppercase">
+        <p className="text-sm font-medium tracking-wide text-brand uppercase">
           {company.name}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight">Equipo</h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-ink-soft">
           {users.length} {users.length === 1 ? "persona" : "personas"} en la
           empresa.
         </p>
@@ -62,23 +62,23 @@ export default async function TeamPage() {
 
       {isAdmin ? (
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+          <h2 className="text-sm font-semibold tracking-wide text-ink-soft uppercase">
             Invitar a alguien
           </h2>
           <InviteForm roleOptions={roleOptions} origin={origin} />
 
           {pending.length > 0 ? (
-            <ul className="mt-2 flex flex-col divide-y divide-neutral-200 rounded-lg border border-neutral-200">
+            <ul className="mt-2 flex flex-col divide-y divide-line rounded-lg border border-line">
               {pending.map((invitation) => (
                 <li
                   key={invitation.id}
                   className="flex items-center justify-between gap-3 px-4 py-3"
                 >
                   <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium text-neutral-900">
+                    <span className="truncate text-sm font-medium text-ink">
                       {invitation.email}
                     </span>
-                    <span className="text-xs text-neutral-600">
+                    <span className="text-xs text-ink-soft">
                       {roleLabel(invitation.role)} · caduca el{" "}
                       {dateFormat.format(invitation.expiresAt)}
                     </span>
@@ -87,7 +87,7 @@ export default async function TeamPage() {
                     <input type="hidden" name="id" value={invitation.id} />
                     <button
                       type="submit"
-                      className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-700 transition hover:bg-neutral-100"
+                      className="rounded-lg border border-line px-3 py-1.5 text-xs font-medium text-ink transition hover:bg-line/50"
                     >
                       Revocar
                     </button>
@@ -100,21 +100,21 @@ export default async function TeamPage() {
       ) : null}
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+        <h2 className="text-sm font-semibold tracking-wide text-ink-soft uppercase">
           Personas
         </h2>
-        <ul className="flex flex-col divide-y divide-neutral-200 rounded-lg border border-neutral-200">
+        <ul className="flex flex-col divide-y divide-line rounded-lg border border-line">
           {users.map((member) => (
             <li key={member.id} className="flex flex-col gap-0.5 px-4 py-3">
-              <span className="font-medium text-neutral-900">
+              <span className="font-medium text-ink">
                 {member.name}
                 {member.active ? null : (
-                  <span className="ml-2 rounded bg-neutral-100 px-1.5 py-0.5 text-xs font-normal text-neutral-600">
+                  <span className="ml-2 rounded bg-line/50 px-1.5 py-0.5 text-xs font-normal text-ink-soft">
                     inactivo
                   </span>
                 )}
               </span>
-              <span className="text-sm text-neutral-600">
+              <span className="text-sm text-ink-soft">
                 {member.email} · {roleLabel(member.role)}
               </span>
             </li>
@@ -123,7 +123,7 @@ export default async function TeamPage() {
       </section>
 
       <a
-        className="text-sm font-medium text-emerald-800 underline underline-offset-4"
+        className="text-sm font-medium text-brand underline underline-offset-4"
         href="/panel"
       >
         Volver al panel

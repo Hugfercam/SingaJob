@@ -98,7 +98,7 @@ export function OfflineIndicator() {
     <div
       role="status"
       aria-live="polite"
-      className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 bg-amber-100 px-4 py-2 text-sm text-amber-900"
+      className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 bg-amber-100 px-4 py-2 text-sm text-warn"
     >
       <span>
         {online

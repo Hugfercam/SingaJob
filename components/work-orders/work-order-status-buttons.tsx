@@ -3,14 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/primitives";
 import type { WorkOrderStatus } from "@/lib/generated/prisma/client";
 import { submit } from "@/lib/offline/submit";
-
-const primaryClass =
-  "rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60";
-
-const secondaryClass =
-  "rounded-lg border border-neutral-300 px-4 py-2.5 font-medium text-neutral-800 transition hover:bg-neutral-100 disabled:opacity-60";
 
 type Location = { latitude: number; longitude: number };
 
@@ -82,50 +77,51 @@ export function WorkOrderStatusButtons({
       {state.status === "error" ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-control bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
       {state.status === "queued" ? (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <p className="rounded-control bg-warn/10 px-3 py-2 text-sm text-warn">
           Guardado en el dispositivo. Se enviará al recuperar la conexión.
         </p>
       ) : null}
 
       <div className="flex flex-wrap gap-2">
         {status === "PENDING" ? (
-          <button
+          <Button
             type="button"
+            size="lg"
             onClick={() => void change("IN_PROGRESS")}
             disabled={busy}
-            className={primaryClass}
           >
             {busy ? "Un momento…" : "Empezar el parte"}
-          </button>
+          </Button>
         ) : null}
 
         {status === "IN_PROGRESS" ? (
-          <button
+          <Button
             type="button"
+            size="lg"
             onClick={() => void change("COMPLETED")}
             disabled={busy}
-            className={primaryClass}
           >
             {busy ? "Un momento…" : "Completar"}
-          </button>
+          </Button>
         ) : null}
 
         {canCancel && status !== "COMPLETED" && status !== "CANCELLED" ? (
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="lg"
             onClick={() => void change("CANCELLED")}
             disabled={busy}
-            className={secondaryClass}
           >
             Cancelar
-          </button>
+          </Button>
         ) : null}
       </div>
     </div>

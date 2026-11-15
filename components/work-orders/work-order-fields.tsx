@@ -9,7 +9,7 @@ import type {
 import { submit } from "@/lib/offline/submit";
 
 const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 disabled:bg-neutral-100 disabled:text-neutral-500";
+  "tap w-full rounded-control border border-line bg-surface px-3 py-2 text-base text-ink outline-none transition-colors placeholder:text-ink-soft/70 focus:border-brand disabled:bg-line/40 disabled:text-ink-soft";
 
 type State =
   | { status: "idle" | "saving" }
@@ -87,7 +87,7 @@ function Control({
 
     case "CHECKBOX":
       return (
-        <label className="flex items-center gap-2 text-sm text-neutral-700">
+        <label className="flex items-center gap-2 text-sm text-ink">
           <input
             id={name}
             name={name}
@@ -107,7 +107,7 @@ function Control({
         <ul className="flex flex-col gap-1">
           {(field.options ?? []).map((option) => (
             <li key={option}>
-              <label className="flex items-center gap-2 text-sm text-neutral-700">
+              <label className="flex items-center gap-2 text-sm text-ink">
                 <input
                   name={name}
                   type="checkbox"
@@ -197,26 +197,26 @@ export function WorkOrderFields({
       {state.status === "rejected" ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
       {state.status === "saved" ? (
-        <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+        <p className="rounded-lg bg-brand-soft/60 px-3 py-2 text-sm text-brand">
           Guardado.
         </p>
       ) : null}
 
       {state.status === "queued" ? (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <p className="rounded-lg bg-warn/10 px-3 py-2 text-sm text-warn">
           Guardado en el dispositivo. Se enviará al recuperar la conexión.
         </p>
       ) : null}
 
       {fields.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-4 text-center text-sm text-neutral-600">
+        <p className="rounded-lg border border-dashed border-line px-4 py-4 text-center text-sm text-ink-soft">
           Este parte no tiene campos: se creó sin plantilla.
         </p>
       ) : null}
@@ -229,11 +229,11 @@ export function WorkOrderFields({
           <div key={field.id} className="flex flex-col gap-1">
             <label
               htmlFor={`field_${field.id}`}
-              className="text-sm font-medium text-neutral-800"
+              className="text-sm font-medium text-ink"
             >
               {field.label}
               {field.required ? (
-                <span className="ml-0.5 text-red-700" aria-hidden="true">
+                <span className="ml-0.5 text-danger" aria-hidden="true">
                   *
                 </span>
               ) : null}
@@ -242,11 +242,11 @@ export function WorkOrderFields({
             <Control field={field} value={values[field.id]} disabled={readOnly} />
 
             {field.help ? (
-              <p className="text-xs text-neutral-500">{field.help}</p>
+              <p className="text-xs text-ink-soft">{field.help}</p>
             ) : null}
 
             {error ? (
-              <p className="text-xs text-red-700" role="alert">
+              <p className="text-xs text-danger" role="alert">
                 {error}
               </p>
             ) : null}
@@ -258,7 +258,7 @@ export function WorkOrderFields({
         <button
           type="submit"
           disabled={state.status === "saving"}
-          className="rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+          className="tap inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-base font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
         >
           {state.status === "saving" ? "Guardando…" : "Guardar"}
         </button>

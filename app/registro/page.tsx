@@ -14,17 +14,17 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-semibold tracking-tight">
           Crea tu empresa en SignaJob
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-ink-soft">
           Serás el administrador. Podrás invitar a tu equipo después.
         </p>
       </header>
 
       <RegisterForm />
 
-      <p className="text-sm text-neutral-600">
+      <p className="text-sm text-ink-soft">
         ¿Ya tienes cuenta?{" "}
         <Link
-          className="font-medium text-emerald-800 underline underline-offset-4"
+          className="font-medium text-brand underline underline-offset-4"
           href="/login"
         >
           Iniciar sesión

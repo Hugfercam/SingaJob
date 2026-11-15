@@ -108,19 +108,19 @@ export function PhotoUpload({
       {state.status === "error" ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
       {state.status === "queued" ? (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <p className="rounded-lg bg-warn/10 px-3 py-2 text-sm text-warn">
           Foto guardada en el dispositivo. Se enviará al recuperar la conexión.
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Añadir foto
         <input
           ref={inputRef}
@@ -135,12 +135,12 @@ export function PhotoUpload({
               void handleFile(file);
             }
           }}
-          className="rounded-lg border border-neutral-300 px-3 py-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-emerald-800 file:px-3 file:py-1.5 file:text-white"
+          className="rounded-lg border border-line px-3 py-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-brand file:px-3 file:py-1.5 file:text-white"
         />
       </label>
 
       {state.status === "working" ? (
-        <p className="text-sm text-neutral-600">Preparando la foto…</p>
+        <p className="text-sm text-ink-soft">Preparando la foto…</p>
       ) : null}
     </div>
   );

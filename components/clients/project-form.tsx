@@ -8,7 +8,7 @@ import {
 } from "@/lib/clients/actions";
 
 const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+  "tap w-full rounded-control border border-line bg-surface px-3 py-2 text-base text-ink outline-none transition-colors placeholder:text-ink-soft/70 focus:border-brand";
 
 export function ProjectForm({ clientId }: { clientId: string }) {
   const [state, formAction, pending] = useActionState(
@@ -23,13 +23,13 @@ export function ProjectForm({ clientId }: { clientId: string }) {
       {state?.error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Nombre de la obra
         <input
           name="name"
@@ -41,7 +41,7 @@ export function ProjectForm({ clientId }: { clientId: string }) {
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Dirección de la obra
         <input
           name="address"
@@ -55,7 +55,7 @@ export function ProjectForm({ clientId }: { clientId: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className="tap inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-base font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
         {pending ? "Añadiendo…" : "Añadir obra"}
       </button>

@@ -8,7 +8,7 @@ import {
 } from "@/lib/work-orders/actions";
 
 const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+  "tap w-full rounded-control border border-line bg-surface px-3 py-2 text-base text-ink outline-none transition-colors placeholder:text-ink-soft/70 focus:border-brand";
 
 type Option = { id: string; name: string };
 
@@ -38,13 +38,13 @@ export function WorkOrderForm({
       {state?.error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Título del parte
         <input
           name="title"
@@ -55,7 +55,7 @@ export function WorkOrderForm({
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Cliente
         <select
           name="clientId"
@@ -73,7 +73,7 @@ export function WorkOrderForm({
         </select>
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Obra (opcional)
         <select
           name="projectId"
@@ -94,7 +94,7 @@ export function WorkOrderForm({
         </select>
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Plantilla
         <select name="templateId" defaultValue="" className={fieldClass}>
           <option value="">Sin plantilla</option>
@@ -104,12 +104,12 @@ export function WorkOrderForm({
             </option>
           ))}
         </select>
-        <span className="text-xs font-normal text-neutral-500">
+        <span className="text-xs font-normal text-ink-soft">
           Los campos del parte se copian de la plantilla al crearlo.
         </span>
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Asignar a
         <select name="assignedToId" defaultValue="" className={fieldClass}>
           <option value="">Sin asignar</option>
@@ -124,7 +124,7 @@ export function WorkOrderForm({
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className="mt-2 tap inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-base font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
         {pending ? "Creando…" : "Crear parte"}
       </button>

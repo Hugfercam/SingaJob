@@ -10,7 +10,7 @@ import {
 } from "@/lib/work-orders/fields";
 
 const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+  "tap w-full rounded-control border border-line bg-surface px-3 py-2 text-base text-ink outline-none transition-colors placeholder:text-ink-soft/70 focus:border-brand";
 
 const TYPE_LABELS: Record<FieldType, string> = {
   TEXT: "Texto",
@@ -83,13 +83,13 @@ export function TemplateEditor({
       {state?.error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Nombre de la plantilla
         <input
           name="name"
@@ -101,7 +101,7 @@ export function TemplateEditor({
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Descripción (opcional)
         <textarea
           name="description"
@@ -114,20 +114,20 @@ export function TemplateEditor({
 
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+          <h2 className="text-sm font-semibold tracking-wide text-ink-soft uppercase">
             Campos ({fields.length})
           </h2>
           <button
             type="button"
             onClick={() => setFields((current) => [...current, newField()])}
-            className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-800 transition hover:bg-neutral-100"
+            className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink transition hover:bg-line/50"
           >
             Añadir campo
           </button>
         </div>
 
         {fields.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-4 text-center text-sm text-neutral-600">
+          <p className="rounded-lg border border-dashed border-line px-4 py-4 text-center text-sm text-ink-soft">
             Todavía no hay campos. Añade el primero.
           </p>
         ) : (
@@ -139,10 +139,10 @@ export function TemplateEditor({
               return (
                 <li
                   key={field.id}
-                  className="flex flex-col gap-2 rounded-lg border border-neutral-200 px-3 py-3"
+                  className="flex flex-col gap-2 rounded-lg border border-line px-3 py-3"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-medium text-neutral-400">
+                    <span className="text-xs font-medium text-ink-soft/70">
                       {index + 1}
                     </span>
                     <input
@@ -162,7 +162,7 @@ export function TemplateEditor({
                         })
                       }
                       aria-label={`Tipo del campo ${index + 1}`}
-                      className="rounded-lg border border-neutral-300 px-2 py-2 text-sm text-neutral-800"
+                      className="rounded-lg border border-line px-2 py-2 text-sm text-ink"
                     >
                       {FIELD_TYPES.map((type) => (
                         <option key={type} value={type}>
@@ -189,7 +189,7 @@ export function TemplateEditor({
                     />
                   ) : null}
 
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-700">
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-ink">
                     <label className="flex items-center gap-1.5">
                       <input
                         type="checkbox"
@@ -210,7 +210,7 @@ export function TemplateEditor({
                         onClick={() => moveField(index, -1)}
                         disabled={index === 0}
                         aria-label={`Subir el campo ${index + 1}`}
-                        className="rounded border border-neutral-300 px-2 py-1 disabled:opacity-40"
+                        className="rounded border border-line px-2 py-1 disabled:opacity-40"
                       >
                         ↑
                       </button>
@@ -219,7 +219,7 @@ export function TemplateEditor({
                         onClick={() => moveField(index, 1)}
                         disabled={index === fields.length - 1}
                         aria-label={`Bajar el campo ${index + 1}`}
-                        className="rounded border border-neutral-300 px-2 py-1 disabled:opacity-40"
+                        className="rounded border border-line px-2 py-1 disabled:opacity-40"
                       >
                         ↓
                       </button>
@@ -230,7 +230,7 @@ export function TemplateEditor({
                             current.filter((item) => item.id !== field.id),
                           )
                         }
-                        className="rounded border border-neutral-300 px-2 py-1 text-red-700"
+                        className="rounded border border-line px-2 py-1 text-danger"
                       >
                         Quitar
                       </button>
@@ -246,7 +246,7 @@ export function TemplateEditor({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className="tap inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-base font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
         {pending ? "Guardando…" : "Guardar plantilla"}
       </button>

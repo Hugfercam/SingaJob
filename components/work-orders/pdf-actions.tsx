@@ -59,7 +59,7 @@ export function PdfActions({
       {state.status === "error" ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
@@ -68,7 +68,7 @@ export function PdfActions({
       <div className="flex flex-wrap gap-2">
         <a
           href={`/api/partes/${workOrderId}/pdf`}
-          className="rounded-lg border border-neutral-300 px-4 py-2.5 text-sm font-medium text-neutral-800 transition hover:bg-neutral-100"
+          className="rounded-lg border border-line px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-line/50"
         >
           Descargar albarán (PDF)
         </a>
@@ -76,7 +76,7 @@ export function PdfActions({
           type="button"
           onClick={() => void share()}
           disabled={state.status === "working"}
-          className="rounded-lg border border-neutral-300 px-4 py-2.5 text-sm font-medium text-neutral-800 transition hover:bg-neutral-100 disabled:opacity-60"
+          className="rounded-lg border border-line px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-line/50 disabled:opacity-60"
         >
           {state.status === "working" ? "Preparando…" : "Compartir"}
         </button>

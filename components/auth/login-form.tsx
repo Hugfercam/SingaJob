@@ -17,13 +17,13 @@ export function LoginForm() {
       {state?.error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Email
         <input
           name="email"
@@ -36,7 +36,7 @@ export function LoginForm() {
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Contraseña
         <input
           name="password"

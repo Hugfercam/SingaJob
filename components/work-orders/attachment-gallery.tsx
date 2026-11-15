@@ -59,7 +59,7 @@ export function AttachmentGallery({
       {error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {error}
         </p>
@@ -73,13 +73,13 @@ export function AttachmentGallery({
               <img
                 src={`/api/adjuntos/${photo.id}`}
                 alt={photo.fileName}
-                className="h-32 w-full rounded-lg border border-neutral-200 object-cover"
+                className="h-32 w-full rounded-lg border border-line object-cover"
               />
               <button
                 type="button"
                 onClick={() => void remove(photo.id)}
                 disabled={removing === photo.id}
-                className="text-xs font-medium text-red-700 underline underline-offset-2 disabled:opacity-50"
+                className="text-xs font-medium text-danger underline underline-offset-2 disabled:opacity-50"
               >
                 {removing === photo.id ? "Borrando…" : "Borrar foto"}
               </button>
@@ -96,9 +96,9 @@ export function AttachmentGallery({
               <img
                 src={`/api/adjuntos/${signature.id}`}
                 alt={signature.fileName}
-                className="h-24 w-full rounded-lg border border-neutral-200 bg-white object-contain"
+                className="h-24 w-full rounded-lg border border-line bg-surface object-contain"
               />
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-ink-soft">
                 {signature.kind === "SIGNATURE_CLIENT"
                   ? "Firma del cliente"
                   : "Firma del técnico"}

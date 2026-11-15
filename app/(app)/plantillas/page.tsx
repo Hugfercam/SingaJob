@@ -19,40 +19,40 @@ export default async function TemplatesPage() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-6 py-12">
       <header className="flex flex-col gap-1">
-        <p className="text-sm font-medium tracking-wide text-emerald-800 uppercase">
+        <p className="text-sm font-medium tracking-wide text-brand uppercase">
           {company.name}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight">Plantillas</h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-ink-soft">
           {templates.length}{" "}
           {templates.length === 1 ? "plantilla" : "plantillas"} de parte.
         </p>
       </header>
 
       <Link
-        className="rounded-lg bg-emerald-800 px-4 py-2.5 text-center font-medium text-white transition hover:bg-emerald-900"
+        className="rounded-lg bg-brand px-4 py-2.5 text-center font-medium text-white transition hover:bg-brand/90"
         href="/plantillas/nueva"
       >
         Nueva plantilla
       </Link>
 
       {templates.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-6 text-center text-sm text-neutral-600">
+        <p className="rounded-lg border border-dashed border-line px-4 py-6 text-center text-sm text-ink-soft">
           Todavía no hay plantillas. Crea una con los campos que usáis en cada
           tipo de trabajo.
         </p>
       ) : (
-        <ul className="flex flex-col divide-y divide-neutral-200 rounded-lg border border-neutral-200">
+        <ul className="flex flex-col divide-y divide-line rounded-lg border border-line">
           {templates.map((template) => (
             <li key={template.id}>
               <Link
-                className="flex flex-col gap-0.5 px-4 py-3 transition hover:bg-neutral-50"
+                className="flex flex-col gap-0.5 px-4 py-3 transition hover:bg-brand-soft/30"
                 href={`/plantillas/${template.id}`}
               >
-                <span className="font-medium text-neutral-900">
+                <span className="font-medium text-ink">
                   {template.name}
                 </span>
-                <span className="text-sm text-neutral-600">
+                <span className="text-sm text-ink-soft">
                   {template.fieldCount}{" "}
                   {template.fieldCount === 1 ? "campo" : "campos"}
                   {template.description ? ` · ${template.description}` : ""}
@@ -64,7 +64,7 @@ export default async function TemplatesPage() {
       )}
 
       <Link
-        className="text-sm font-medium text-emerald-800 underline underline-offset-4"
+        className="text-sm font-medium text-brand underline underline-offset-4"
         href="/panel"
       >
         Volver al panel

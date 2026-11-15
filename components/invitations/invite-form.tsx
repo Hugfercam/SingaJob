@@ -7,7 +7,7 @@ import { inviteEmployee, type InviteState } from "@/lib/invitations/actions";
 const initialState: InviteState = null;
 
 const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+  "tap w-full rounded-control border border-line bg-surface px-3 py-2 text-base text-ink outline-none transition-colors placeholder:text-ink-soft/70 focus:border-brand";
 
 type RoleOption = { value: string; label: string };
 
@@ -48,24 +48,24 @@ export function InviteForm({
       {state?.status === "error" ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.message}
         </p>
       ) : null}
 
       {state?.status === "ok" ? (
-        <div className="flex flex-col gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+        <div className="flex flex-col gap-2 rounded-lg bg-brand-soft/60 px-3 py-2 text-sm text-brand">
           <p>{state.message}</p>
           {absoluteLink ? (
             <>
-              <code className="break-all rounded bg-white px-2 py-1 text-xs text-neutral-700">
+              <code className="break-all rounded bg-surface px-2 py-1 text-xs text-ink">
                 {absoluteLink}
               </code>
               <button
                 type="button"
                 onClick={copyLink}
-                className="self-start rounded-lg border border-emerald-700 px-3 py-1.5 text-sm font-medium text-emerald-900 transition hover:bg-emerald-100"
+                className="self-start tap rounded-control border border-brand px-3 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand-soft"
               >
                 {copied ? "Copiado" : "Copiar enlace"}
               </button>
@@ -74,7 +74,7 @@ export function InviteForm({
         </div>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Email del empleado
         <input
           name="email"
@@ -87,7 +87,7 @@ export function InviteForm({
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Rol
         <select name="role" defaultValue="TECHNICIAN" className={fieldClass}>
           {roleOptions.map((option) => (
@@ -101,7 +101,7 @@ export function InviteForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className="tap inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-base font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
         {pending ? "Creando enlace…" : "Crear enlace de invitación"}
       </button>

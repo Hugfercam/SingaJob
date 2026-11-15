@@ -30,13 +30,13 @@ export default async function EditTemplatePage({
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-6 py-12">
       <header className="flex flex-col gap-1">
-        <p className="text-sm font-medium tracking-wide text-emerald-800 uppercase">
+        <p className="text-sm font-medium tracking-wide text-brand uppercase">
           {company.name}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight">
           {template.name}
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-ink-soft">
           Los cambios afectan a los partes nuevos, no a los ya creados.
         </p>
       </header>
@@ -49,7 +49,7 @@ export default async function EditTemplatePage({
       />
 
       <Link
-        className="text-sm font-medium text-emerald-800 underline underline-offset-4"
+        className="text-sm font-medium text-brand underline underline-offset-4"
         href="/plantillas"
       >
         Volver a plantillas

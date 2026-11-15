@@ -37,49 +37,49 @@ export default async function ClientDetailPage({
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-1">
-        <p className="text-sm font-medium tracking-wide text-emerald-800 uppercase">
+        <p className="text-sm font-medium tracking-wide text-brand uppercase">
           {company.name}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight">{client.name}</h1>
         {client.address ? (
-          <p className="text-sm text-neutral-600">{client.address}</p>
+          <p className="text-sm text-ink-soft">{client.address}</p>
         ) : null}
       </header>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+        <h2 className="text-sm font-semibold tracking-wide text-ink-soft uppercase">
           Contacto
         </h2>
-        <div className="flex flex-col gap-1 rounded-lg border border-neutral-200 px-4 py-3 text-sm">
+        <div className="flex flex-col gap-1 rounded-lg border border-line px-4 py-3 text-sm">
           {client.phone ? (
             <a
-              className="font-medium text-emerald-800"
+              className="font-medium text-brand"
               href={`tel:${client.phone.replace(/\s+/g, "")}`}
             >
               {client.phone}
             </a>
           ) : (
-            <span className="text-neutral-500">Sin teléfono</span>
+            <span className="text-ink-soft">Sin teléfono</span>
           )}
           {client.email ? (
             <a
-              className="text-emerald-800 underline underline-offset-4"
+              className="text-brand underline underline-offset-4"
               href={`mailto:${client.email}`}
             >
               {client.email}
             </a>
           ) : (
-            <span className="text-neutral-500">Sin email</span>
+            <span className="text-ink-soft">Sin email</span>
           )}
           {client.notes ? (
-            <p className="mt-1 whitespace-pre-line text-neutral-600">
+            <p className="mt-1 whitespace-pre-line text-ink-soft">
               {client.notes}
             </p>
           ) : null}
         </div>
 
         <Link
-          className="self-start text-sm font-medium text-emerald-800 underline underline-offset-4"
+          className="self-start text-sm font-medium text-brand underline underline-offset-4"
           href={`/clientes/${client.id}/editar`}
         >
           Editar cliente
@@ -87,26 +87,26 @@ export default async function ClientDetailPage({
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+        <h2 className="text-sm font-semibold tracking-wide text-ink-soft uppercase">
           Obras ({client.projects.length})
         </h2>
 
         {client.projects.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-4 text-center text-sm text-neutral-600">
+          <p className="rounded-lg border border-dashed border-line px-4 py-4 text-center text-sm text-ink-soft">
             Este cliente todavía no tiene obras.
           </p>
         ) : (
-          <ul className="flex flex-col divide-y divide-neutral-200 rounded-lg border border-neutral-200">
+          <ul className="flex flex-col divide-y divide-line rounded-lg border border-line">
             {client.projects.map((project) => (
               <li
                 key={project.id}
                 className="flex flex-col gap-2 px-4 py-3"
               >
                 <div className="flex min-w-0 flex-col gap-0.5">
-                  <span className="font-medium text-neutral-900">
+                  <span className="font-medium text-ink">
                     {project.name}
                   </span>
-                  <span className="text-sm text-neutral-600">
+                  <span className="text-sm text-ink-soft">
                     {project.address ? `${project.address} · ` : ""}
                     desde {dateFormat.format(project.createdAt)}
                   </span>
@@ -124,7 +124,7 @@ export default async function ClientDetailPage({
       </section>
 
       <Link
-        className="text-sm font-medium text-emerald-800 underline underline-offset-4"
+        className="text-sm font-medium text-brand underline underline-offset-4"
         href="/clientes"
       >
         Volver a clientes

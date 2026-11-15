@@ -20,13 +20,13 @@ export function RegisterForm() {
       {state?.error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Nombre de la empresa
         <input
           name="companyName"
@@ -38,7 +38,7 @@ export function RegisterForm() {
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Tu nombre
         <input
           name="name"
@@ -50,7 +50,7 @@ export function RegisterForm() {
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Email
         <input
           name="email"
@@ -63,7 +63,7 @@ export function RegisterForm() {
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Contraseña
         <input
           name="password"
@@ -73,7 +73,7 @@ export function RegisterForm() {
           required
           className={fieldClass}
         />
-        <span className="text-xs font-normal text-neutral-500">
+        <span className="text-xs font-normal text-ink-soft">
           Al menos 10 caracteres.
         </span>
       </label>

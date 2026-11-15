@@ -7,7 +7,7 @@ import { acceptInvitation, type AcceptState } from "@/lib/invitations/actions";
 const initialState: AcceptState = null;
 
 const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+  "tap w-full rounded-control border border-line bg-surface px-3 py-2 text-base text-ink outline-none transition-colors placeholder:text-ink-soft/70 focus:border-brand";
 
 export function AcceptForm({ token }: { token: string }) {
   // El token viaja fijado al servidor: no se puede manipular desde la página.
@@ -22,13 +22,13 @@ export function AcceptForm({ token }: { token: string }) {
       {state?.error ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Tu nombre
         <input
           name="name"
@@ -40,7 +40,7 @@ export function AcceptForm({ token }: { token: string }) {
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         Elige una contraseña
         <input
           name="password"
@@ -50,7 +50,7 @@ export function AcceptForm({ token }: { token: string }) {
           required
           className={fieldClass}
         />
-        <span className="text-xs font-normal text-neutral-500">
+        <span className="text-xs font-normal text-ink-soft">
           Al menos 10 caracteres.
         </span>
       </label>
@@ -58,7 +58,7 @@ export function AcceptForm({ token }: { token: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className="mt-2 tap inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-base font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
         {pending ? "Entrando…" : "Aceptar invitación y entrar"}
       </button>

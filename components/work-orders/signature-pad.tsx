@@ -168,7 +168,7 @@ export function SignaturePad({
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm font-medium text-neutral-800">{title}</p>
+      <p className="text-sm font-medium text-ink">{title}</p>
 
       <canvas
         ref={canvasRef}
@@ -177,20 +177,20 @@ export function SignaturePad({
         onPointerUp={end}
         onPointerLeave={end}
         aria-label={title}
-        className="h-[200px] w-full touch-none rounded-lg border border-neutral-300 bg-white"
+        className="h-[200px] w-full touch-none rounded-lg border border-line bg-surface"
       />
 
       {state.status === "error" ? (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
         >
           {state.error}
         </p>
       ) : null}
 
       {state.status === "queued" ? (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <p className="rounded-lg bg-warn/10 px-3 py-2 text-sm text-warn">
           Firma guardada en el dispositivo. Se enviará al recuperar la conexión.
         </p>
       ) : null}
@@ -200,14 +200,14 @@ export function SignaturePad({
           type="button"
           onClick={() => void save()}
           disabled={state.status === "saving" || !hasInk}
-          className="rounded-lg bg-emerald-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-900 disabled:opacity-50"
+          className="tap inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-paper transition-colors hover:bg-brand/90 disabled:opacity-50"
         >
           {state.status === "saving" ? "Guardando…" : "Guardar firma"}
         </button>
         <button
           type="button"
           onClick={clear}
-          className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-800 transition hover:bg-neutral-100"
+          className="rounded-lg border border-line px-4 py-2 text-sm font-medium text-ink transition hover:bg-line/50"
         >
           Limpiar
         </button>

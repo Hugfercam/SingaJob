@@ -6,8 +6,15 @@ import { AttachmentGallery } from "@/components/work-orders/attachment-gallery";
 import { PdfActions } from "@/components/work-orders/pdf-actions";
 import { PhotoUpload } from "@/components/work-orders/photo-upload";
 import { SignaturePad } from "@/components/work-orders/signature-pad";
+import { StatusTrail } from "@/components/work-orders/status-trail";
 import { WorkOrderFields } from "@/components/work-orders/work-order-fields";
 import { WorkOrderStatusButtons } from "@/components/work-orders/work-order-status-buttons";
+import {
+  Card,
+  SectionTitle,
+  StatusBadge,
+  type Tone,
+} from "@/components/ui/primitives";
 import { requireSession } from "@/lib/auth/guards";
 import { workOrderStatusLabel } from "@/lib/domain/work-orders";
 import { Role, type WorkOrderStatus } from "@/lib/generated/prisma/client";
@@ -28,11 +35,11 @@ const dateFormat = new Intl.DateTimeFormat("es-ES", {
   minute: "2-digit",
 });
 
-const badgeClass: Record<WorkOrderStatus, string> = {
-  PENDING: "bg-neutral-100 text-neutral-700",
-  IN_PROGRESS: "bg-emerald-100 text-emerald-900",
-  COMPLETED: "bg-emerald-800 text-white",
-  CANCELLED: "bg-red-100 text-red-800",
+const TONE: Record<WorkOrderStatus, Tone> = {
+  PENDING: "neutral",
+  IN_PROGRESS: "active",
+  COMPLETED: "done",
+  CANCELLED: "danger",
 };
 
 export default async function WorkOrderPage({
@@ -55,6 +62,7 @@ export default async function WorkOrderPage({
   const isClosed =
     workOrder.status === "COMPLETED" || workOrder.status === "CANCELLED";
 
+  const photos = workOrder.attachments.filter((item) => item.kind === "PHOTO");
   const hasClientSignature = workOrder.attachments.some(
     (item) => item.kind === "SIGNATURE_CLIENT",
   );
@@ -72,71 +80,59 @@ export default async function WorkOrderPage({
   );
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-8 px-6 py-12">
+    <>
       <header className="flex flex-col gap-2">
-        <p className="text-sm font-medium tracking-wide text-emerald-800 uppercase">
-          {auth.company.name}
-        </p>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {workOrder.title}
-        </h1>
-
-        <p className="flex flex-wrap items-center gap-2 text-sm text-neutral-600">
-          <span
-            className={`rounded px-1.5 py-0.5 text-xs font-medium ${badgeClass[workOrder.status]}`}
-          >
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="font-display text-2xl leading-tight font-semibold text-ink">
+            {workOrder.title}
+          </h1>
+          <StatusBadge tone={TONE[workOrder.status]}>
             {workOrderStatusLabel(workOrder.status)}
-          </span>
-          <span>
-            {workOrder.clientName}
-            {workOrder.projectName ? ` · ${workOrder.projectName}` : ""}
-          </span>
+          </StatusBadge>
+        </div>
+        <p className="text-sm text-ink-soft">
+          {workOrder.clientName}
+          {workOrder.projectName ? ` · ${workOrder.projectName}` : ""}
         </p>
-
-        <dl className="flex flex-col gap-0.5 text-sm text-neutral-600">
-          {workOrder.clientAddress ? (
-            <div className="flex gap-1">
-              <dt className="sr-only">Dirección</dt>
-              <dd>{workOrder.clientAddress}</dd>
-            </div>
-          ) : null}
-          <div className="flex gap-1">
-            <dt className="text-neutral-500">Asignado a</dt>
-            <dd>{workOrder.assigneeName ?? "nadie"}</dd>
-          </div>
-          <div className="flex gap-1">
-            <dt className="text-neutral-500">Plantilla</dt>
-            <dd>{workOrder.templateName ?? "sin plantilla"}</dd>
-          </div>
-          <div className="flex gap-1">
-            <dt className="text-neutral-500">Creado</dt>
-            <dd>{dateFormat.format(workOrder.createdAt)}</dd>
-          </div>
-          {workOrder.completedAt ? (
-            <div className="flex gap-1">
-              <dt className="text-neutral-500">Completado</dt>
-              <dd>{dateFormat.format(workOrder.completedAt)}</dd>
-            </div>
-          ) : null}
-          {startCoords ? (
-            <div className="flex gap-1">
-              <dt className="text-neutral-500">GPS inicio</dt>
-              <dd>{startCoords}</dd>
-            </div>
-          ) : null}
-          {endCoords ? (
-            <div className="flex gap-1">
-              <dt className="text-neutral-500">GPS fin</dt>
-              <dd>{endCoords}</dd>
-            </div>
-          ) : null}
-        </dl>
       </header>
 
+      <Card className="flex flex-col gap-3 px-4 py-4">
+        <StatusTrail status={workOrder.status} />
+      </Card>
+
+      <Card className="flex flex-col divide-y divide-line text-sm">
+        {[
+          { label: "Dirección", value: workOrder.clientAddress },
+          { label: "Asignado a", value: workOrder.assigneeName ?? "sin asignar" },
+          { label: "Plantilla", value: workOrder.templateName ?? "sin plantilla" },
+          { label: "Creado", value: dateFormat.format(workOrder.createdAt) },
+          workOrder.completedAt
+            ? {
+                label: "Completado",
+                value: dateFormat.format(workOrder.completedAt),
+              }
+            : null,
+          startCoords ? { label: "GPS inicio", value: startCoords } : null,
+          endCoords ? { label: "GPS fin", value: endCoords } : null,
+        ]
+          .filter((row): row is { label: string; value: string } => row !== null)
+          .map((row) => (
+            <div
+              key={row.label}
+              className="flex items-baseline justify-between gap-4 px-4 py-2 first:pt-3 last:pb-3"
+            >
+              <span className="text-ink-soft">{row.label}</span>
+              <span className="tabular text-right text-ink">{row.value}</span>
+            </div>
+          ))}
+      </Card>
+
       {isClosed ? (
-        <p className="rounded-lg bg-neutral-100 px-4 py-3 text-sm text-neutral-700">
-          Este parte está cerrado y no se puede modificar.
-        </p>
+        <Card className="px-4 py-3 text-sm text-ink-soft">
+          {workOrder.status === "CANCELLED"
+            ? "Este parte está cancelado y no se puede modificar."
+            : "Este parte está cerrado. Ya no se puede modificar."}
+        </Card>
       ) : (
         <WorkOrderStatusButtons
           workOrderId={workOrder.id}
@@ -146,36 +142,42 @@ export default async function WorkOrderPage({
         />
       )}
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
-          Campos del parte
-        </h2>
-        <WorkOrderFields
-          workOrderId={workOrder.id}
-          fields={workOrder.fields}
-          values={workOrder.values}
-          readOnly={isClosed}
-        />
+      <section className="flex flex-col gap-3">
+        <SectionTitle>Campos del parte</SectionTitle>
+        <Card className="px-4 py-4">
+          <WorkOrderFields
+            workOrderId={workOrder.id}
+            fields={workOrder.fields}
+            values={workOrder.values}
+            readOnly={isClosed}
+          />
+        </Card>
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+        <SectionTitle
+          action={
+            photos.length > 0 ? (
+              <span className="text-sm text-ink-soft">{photos.length}</span>
+            ) : null
+          }
+        >
           Fotos
-        </h2>
+        </SectionTitle>
+
         <AttachmentGallery
           workOrderId={workOrder.id}
-          attachments={workOrder.attachments.filter(
-            (item) => item.kind === "PHOTO",
-          )}
+          attachments={photos}
         />
-        <PhotoUpload workOrderId={workOrder.id} disabled={isClosed} />
+
+        {isClosed ? null : (
+          <PhotoUpload workOrderId={workOrder.id} disabled={isClosed} />
+        )}
       </section>
 
       {isClosed ? null : (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
-            Firmas
-          </h2>
+        <section className="flex flex-col gap-3">
+          <SectionTitle>Firmas</SectionTitle>
 
           {hasClientSignature ? (
             <AttachmentGallery
@@ -185,11 +187,13 @@ export default async function WorkOrderPage({
               )}
             />
           ) : (
-            <SignaturePad
-              workOrderId={workOrder.id}
-              kind="SIGNATURE_CLIENT"
-              title="Firma del cliente"
-            />
+            <Card className="px-4 py-4">
+              <SignaturePad
+                workOrderId={workOrder.id}
+                kind="SIGNATURE_CLIENT"
+                title="Firma del cliente"
+              />
+            </Card>
           )}
 
           {hasTechnicianSignature ? (
@@ -200,37 +204,35 @@ export default async function WorkOrderPage({
               )}
             />
           ) : (
-            <SignaturePad
-              workOrderId={workOrder.id}
-              kind="SIGNATURE_TECHNICIAN"
-              title="Firma del técnico"
-            />
+            <Card className="px-4 py-4">
+              <SignaturePad
+                workOrderId={workOrder.id}
+                kind="SIGNATURE_TECHNICIAN"
+                title="Firma del técnico"
+              />
+            </Card>
           )}
         </section>
       )}
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
-          Albarán
-        </h2>
-        <PdfActions
-          workOrderId={workOrder.id}
-          title={workOrder.title}
-          disabled={workOrder.status !== "COMPLETED"}
-        />
-        {workOrder.status !== "COMPLETED" ? (
-          <p className="text-xs text-neutral-500">
+        <SectionTitle>Albarán</SectionTitle>
+
+        {workOrder.status === "COMPLETED" ? (
+          <PdfActions workOrderId={workOrder.id} title={workOrder.title} />
+        ) : (
+          <p className="text-sm text-ink-soft">
             El albarán se puede descargar cuando el parte esté completado.
           </p>
-        ) : null}
+        )}
       </section>
 
       <Link
-        className="text-sm font-medium text-emerald-800 underline underline-offset-4"
         href="/partes"
+        className="text-sm font-medium text-brand underline underline-offset-4"
       >
         Volver a partes
       </Link>
-    </main>
+    </>
   );
 }

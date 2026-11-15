@@ -33,8 +33,8 @@ export function ProjectStatusForm({
             aria-current={isCurrent ? "true" : undefined}
             className={
               isCurrent
-                ? "rounded-lg border border-emerald-800 bg-emerald-800 px-2.5 py-1 text-xs font-medium text-white"
-                : "rounded-lg border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:bg-neutral-100"
+                ? "rounded-control border border-brand bg-brand px-2.5 py-1 text-xs font-medium text-paper"
+                : "rounded-lg border border-line px-2.5 py-1 text-xs font-medium text-ink transition hover:bg-line/50"
             }
           >
             {projectStatusLabel(value)}
