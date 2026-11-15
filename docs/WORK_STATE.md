@@ -13,9 +13,9 @@
 Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicación Next.js full-stack (panel + campo), con PostgreSQL y Prisma.
 
 ## Tarea activa
-- ID / enlace a `docs/tasks/`: ninguna abierta. [T-001](tasks/T-001-arranque-proyecto.md), [T-002](tasks/T-002-autenticacion.md), [T-003](tasks/T-003-invitaciones.md), [T-004](tasks/T-004-clientes-proyectos.md), [T-005](tasks/T-005-plantillas-y-partes.md) y [T-006](tasks/T-006-cierre-y-offline.md) están **terminadas**.
-- Estado: sin bloqueos técnicos
-- Próximo paso concreto: T-007 — dashboard del administrador y diseño
+- ID / enlace a `docs/tasks/`: [T-007 — Dashboard e identidad visual](tasks/T-007-dashboard-y-diseno.md)
+- Estado: **T-007 aprobada y pendiente de inicio** (dirección visual A + C, un solo tema claro). T-001 a T-006 terminadas.
+- Próximo paso concreto: arrancar T-007a — tokens, componentes y estructura de navegación
 - Guía para probar a mano: [GUIA_PRUEBAS.md](GUIA_PRUEBAS.md)
 
 ## Hechos verificados

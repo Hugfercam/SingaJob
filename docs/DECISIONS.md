@@ -174,3 +174,21 @@
   - El almacenamiento en disco no sirve para producción tal cual: hace falta un volumen persistente o cambiar el adaptador a R2.
   - El service worker solo se registra en producción para no pelear con el recargado en caliente.
 - **Referencia:** `lib/offline/`, `lib/work-orders/service.ts`, `docs/tasks/T-006-cierre-y-offline.md` §4.
+
+### D-010 — Identidad visual: "sello y papel" con modo obra y un solo tema claro
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** La aplicación funcionaba pero no se sentía un producto: sin tokens, sin navegación, sin jerarquía y con un "panel" de cinco contadores. Había que decidir una dirección visual que la diferenciara y que sirviera tanto en oficina como con guantes al sol.
+- **Opciones estudiadas:**
+  - *Sello y papel (A):* identidad editorial apoyada en el trazo de la firma, que es justo lo que vende el producto.
+  - *Obra en directo (B):* dashboard oscuro con cifras grandes; es el lenguaje de cualquier SaaS y no diferencia.
+  - *Alta visibilidad (C):* tipografía muy grande y contraste máximo, pensada para el campo.
+- **Decisión:** A como identidad y C en el modo obra: papel cálido, tinta verde, pila serif en titulares, trazo de firma como recurso (subrayado, progreso y sello al cerrar un parte) y un modo de campo que aumenta tipografía y controles. **Un solo tema claro**; se descarta el oscuro por ahora.
+- **Consecuencias:**
+  - Una sola fuente de tokens en `@theme`; ningún color fuera de ella.
+  - Dos densidades sobre los mismos componentes: los componentes leen el modo, no se duplican pantallas.
+  - El movimiento se limita a explicar cambios y respeta `prefers-reduced-motion`.
+  - Sin tema oscuro: si algún día hay uso nocturno real, se añade después y habrá que revisar contrastes de todas las pantallas.
+  - Todo requisito de accesibilidad (contraste AA, 44 px, teclado, 200 % de zoom) es criterio de aceptación, no recomendación.
+- **Referencia:** `docs/tasks/T-007-dashboard-y-diseno.md` §4 y §5.
