@@ -1,6 +1,6 @@
 # T-001 — Arranque del proyecto
 
-- **Estado:** En curso — bloqueada por la base de datos
+- **Estado:** Terminada
 - **Prioridad:** Alta
 - **Fecha de creación:** 2026-11-15
 - **Última actualización:** 2026-11-15
@@ -188,6 +188,12 @@ npx prisma migrate dev --name init
 
 Y se cierra la verificación con `GET /api/health`.
 
+**Lo que pasó realmente al instalarlo (2026-11-15)** — tres detalles que conviene no repetir:
+
+- `winget` **no deja `psql` en el `PATH`** de la sesión abierta. Hay que usar la ruta completa (`C:\Program Files\PostgreSQL\17\bin\psql.exe`) o abrir una terminal nueva.
+- La instalación silenciosa deja la contraseña del superusuario en **`postgres`**. Es una credencial local de desarrollo, no un secreto de producción.
+- El rol `signajob` necesita **`CREATEDB`**: `prisma migrate dev` crea una base *shadow* para calcular la migración (`ALTER ROLE signajob CREATEDB;`). En producción se usa `prisma migrate deploy`, que no la necesita.
+
 ### 5.2 Riesgos técnicos
 
 | Riesgo | Impacto | Mitigación |
@@ -214,15 +220,15 @@ Todo son archivos nuevos y una base de datos vacía. La reversión consiste en e
 
 ## 6. Criterios de aceptación
 
-- [ ] El repositorio Git existe y `.env` no está versionado (`.env.example` sí).
-- [ ] `npm run dev` arranca y la página responde en el puerto 3100.
-- [ ] `GET /api/health` devuelve `{ ok: true, db: "up" }` contra PostgreSQL real.
-- [ ] `npx prisma migrate status` no reporta migraciones pendientes.
-- [ ] Existen las tablas `Company` y `User`, con relación por `companyId`.
-- [ ] `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` terminan sin errores.
-- [ ] `app/manifest.ts` se sirve y los iconos 192/512 existen y cargan.
-- [ ] No hay secretos en el repositorio ni credenciales en la documentación.
-- [ ] `docs/tasks/T-001-arranque-proyecto.md` y `docs/WORK_STATE.md` reflejan la realidad.
+- [x] El repositorio Git existe y `.env` no está versionado (`.env.example` sí).
+- [x] `npm run dev` arranca y la página responde en el puerto 3100.
+- [x] `GET /api/health` devuelve `{ ok: true, db: "up" }` contra PostgreSQL real.
+- [x] `npx prisma migrate status` no reporta migraciones pendientes.
+- [x] Existen las tablas `Company` y `User`, con relación por `companyId`.
+- [x] `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` terminan sin errores.
+- [x] `app/manifest.ts` se sirve y los iconos 192/512 existen y cargan.
+- [x] No hay secretos en el repositorio ni credenciales en la documentación.
+- [x] `docs/tasks/T-001-arranque-proyecto.md` y `docs/WORK_STATE.md` reflejan la realidad.
 
 ## 7. Registro de implementación
 
@@ -237,6 +243,8 @@ Todo son archivos nuevos y una base de datos vacía. La reversión consiste en e
 - `app/manifest.ts`, iconos 192/512/maskable/apple generados con Pillow, metadatos y viewport en español.
 - `lib/domain/tenant.ts` con `tenantScope` y `assertSameTenant`, más 5 pruebas en `tests/tenant.test.ts`.
 - Scripts `dev`, `build`, `start`, `lint`, `typecheck`, `test`, `test:watch`, `postinstall`.
+- PostgreSQL 17 instalado por el usuario; rol `signajob` (con `CREATEDB`) y base `signajob_dev` creados y verificados.
+- Migración `20261115124210_init` creada y aplicada; tablas `companies` y `users`, enum `Role` e índices comprobados en la base real.
 
 **Archivos creados o modificados:** `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `vitest.config.mts`, `.gitignore`, `.env` (no versionado), `.env.example`, `prisma/schema.prisma`, `prisma7.config.ts`, `lib/db.ts`, `lib/domain/tenant.ts`, `app/layout.tsx`, `app/page.tsx`, `app/globals.css`, `app/manifest.ts`, `app/api/health/route.ts`, `public/icons/*`, `tests/tenant.test.ts`, esta ficha y `docs/WORK_STATE.md`.
 
@@ -254,7 +262,7 @@ Todo son archivos nuevos y una base de datos vacía. La reversión consiste en e
 
 - `npm` necesita `npm_config_cache` en una carpeta temporal, y `npx` además `APPDATA` redirigido, por el sandbox de escritura.
 - Necesitaron permiso ampliado `npm install`, `next build` y `prisma migrate diff`, porque lanzan procesos hijos que el modo restringido bloquea con `spawn EPERM`.
-- `winget` no funciona en este entorno (falla incluso `--version`), así que la instalación de PostgreSQL no se pudo hacer desde aquí.
+- `winget` no funciona en este entorno (falla incluso `--version`), así que la instalación de PostgreSQL la hizo el usuario en su terminal. El rol y la base sí se crearon desde aquí, invocando `psql` por su ruta completa.
 
 ## 8. Validación (evidencia real)
 
@@ -267,16 +275,19 @@ Todo son archivos nuevos y una base de datos vacía. La reversión consiste en e
 | `GET /` | Correcto | 200, título "SignaJob — Partes de trabajo con firma del cliente", manifest enlazado |
 | `GET /manifest.webmanifest` | Correcto | 200, `display: standalone`, iconos 192, 512 y maskable |
 | `GET /api/health` (sin base de datos) | Correcto | 503 `{"ok":false,"db":"down"}`: la ruta y el manejo de error funcionan |
-| `GET /api/health` (con base de datos) | **No ejecutado** | Requiere el servidor PostgreSQL, que no está instalado |
+| `GET /api/health` (con base de datos) | Correcto | 200 `{"ok":true,"db":"up"}` contra PostgreSQL 17.12 |
 | `npx prisma validate` | Correcto | "The schema at prisma\schema.prisma is valid" |
 | `npx prisma migrate diff --from-empty --to-schema` | Correcto | SQL con enum `Role`, FK con `ON DELETE CASCADE` y único `(companyId, email)` |
-| `npx prisma migrate dev --name init` | **No ejecutado** | Bloqueado: no hay servidor de base de datos |
-| `npx prisma migrate status` | **No ejecutado** | Bloqueado: no hay servidor de base de datos |
+| `npx prisma migrate dev --name init` | Correcto | Migración `20261115124210_init` creada y aplicada |
+| `npx prisma migrate status` | Correcto | "Database schema is up to date!" |
+| Tablas en la base real | Correcto | `companies`, `users` y `_prisma_migrations` |
+| Enum `Role` | Correcto | `ADMIN, MANAGER, TECHNICIAN` |
+| Restricciones e índices de `users` | Correcto | FK con `ON DELETE CASCADE`, único `(companyId, email)` e índice por `companyId` |
 
 ## 9. Cierre o continuidad
 
-- **Resultado:** base del proyecto operativa. Compila, pasa pruebas y lint, la PWA se sirve con manifest e iconos, y el acceso a datos está escrito y validado a nivel de esquema. **Falta únicamente la base de datos real.**
-- **Pendientes / bloqueos:** instalar PostgreSQL 17 y crear la base `signajob_dev`. Después: `npx prisma migrate dev --name init` y comprobar `GET /api/health` con `db: "up"`.
-- **Siguiente paso:** que el usuario ejecute la instalación (comandos en §5.1) y yo cierre las tres comprobaciones pendientes.
-- **Commit:** primer commit de `main` — `feat: arranque del proyecto con Next.js, Prisma y PWA mínima` (31 archivos).
+- **Resultado: T-001 terminado.** La aplicación arranca, compila, pasa lint, tipos y pruebas, se sirve como PWA instalable y habla con PostgreSQL real (`db: "up"`).
+- **Pendientes / bloqueos:** ninguno para esta tarea. Queda pendiente para más adelante el PostgreSQL de producción, que será otro proveedor con su propia `DATABASE_URL`.
+- **Siguiente paso:** T-002 — autenticación, sesiones y permisos por rol, sobre los modelos `Company` y `User` ya migrados.
+- **Commit:** primer commit de `main` — `feat: arranque del proyecto con Next.js, Prisma y PWA mínima` (31 archivos), más el commit de cierre con la migración inicial.
 

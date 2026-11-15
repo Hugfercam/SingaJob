@@ -84,5 +84,7 @@
   - El desarrollo funciona sin conexión y sin coste; la base solo escucha en `localhost`.
   - Las credenciales locales (`signajob`/`signajob`) son de desarrollo y no sirven para producción; el `.env` queda fuera de Git.
   - La instalación la hace el usuario: el agente no puede escribir fuera del workspace ni usar `winget` en este entorno.
+  - `psql` **no queda en el `PATH`** tras instalarlo con `winget`: hay que invocarlo por su ruta completa (`C:\Program Files\PostgreSQL\17\bin\psql.exe`) o abrir una terminal nueva.
+  - El rol de desarrollo necesita **`CREATEDB`**, porque `prisma migrate dev` crea una base *shadow* para calcular la migración. En producción se usa `prisma migrate deploy`, que no la necesita.
   - **Sigue pendiente** el PostgreSQL de producción, que probablemente sea un servicio gestionado (candidato: Neon) y necesitará su propia `DATABASE_URL` y estrategia de copias.
 - **Referencia:** `docs/tasks/T-001-arranque-proyecto.md` §5.1; `SIGNAJOB_PROYECTO.md` §10.2.

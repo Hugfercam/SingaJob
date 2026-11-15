@@ -1,6 +1,6 @@
 # SignaJob
 
-> **Estado:** Descubrimiento cerrado — producto y arquitectura decididos, **sin código todavía**
+> **Estado:** En desarrollo — aplicación Next.js y base de datos operativas (T-001 terminada)
 > **Versión de esta descripción:** 1
 > **Última revisión:** 2026-11-15
 > **Especificación completa:** [SIGNAJOB_PROYECTO.md](SIGNAJOB_PROYECTO.md) · **Decisiones:** [docs/DECISIONS.md](docs/DECISIONS.md)
@@ -114,7 +114,7 @@ Decidido (2026-11-15):
 - **PostgreSQL + Prisma** como base de datos.
 - **PWA instalable** con service worker, sin app nativa ni tiendas.
 
-Pendiente de decidir: proveedor de hosting y de PostgreSQL, método de autenticación, estrategia concreta de sincronización sin conexión, generación de PDF, almacenamiento de fotos y envío de email.
+Pendiente de decidir: método de autenticación, estrategia concreta de sincronización sin conexión, generación de PDF, almacenamiento de fotos, envío de email y hosting + PostgreSQL de producción. El entorno local ya está decidido: PostgreSQL 17 instalado (D-004).
 
 Detalle, alternativas descartadas y consecuencias en [docs/DECISIONS.md](docs/DECISIONS.md) (D-001, D-002, D-003).
 
@@ -124,9 +124,9 @@ App nativa si el campo lo exige, firma remota, presupuestos generados automátic
 
 ## 11. Estado y siguientes pasos
 
-- **Fase actual:** Descubrimiento cerrado y arquitectura decidida. No hay código, ni repositorio Git, ni base de datos.
-- **Decisión pendiente:** proveedor de hosting/PostgreSQL y estrategia de sincronización offline.
-- **Siguiente paso:** crear el repositorio y el esqueleto de la aplicación (T-001), empezando por autenticación, empresa y partes.
+- **Fase actual:** Desarrollo. T-001 terminada: repositorio Git, aplicación Next.js 16 con Prisma 7, PostgreSQL 17 en local, migración inicial aplicada y PWA instalable. Todavía sin autenticación.
+- **Decisión pendiente:** método de autenticación, estrategia de sincronización offline y hosting + PostgreSQL de producción.
+- **Siguiente paso:** T-002 — autenticación, sesiones y permisos por rol.
 
 ---
 
