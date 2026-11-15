@@ -161,7 +161,45 @@ Puedes cambiar el tipo de cada campo (texto, número, fecha, selección, casilla
 
 ---
 
-## 7. Prueba E — Permisos y aislamiento
+## 7. Prueba E — Cierre del parte y sin conexión
+
+**Fotos y ubicación** (como técnico asignado, con el parte en curso)
+
+1. Abrir el parte y pulsar **"Empezar el parte"**. El navegador pedirá permiso de ubicación: acéptalo.
+2. En **Fotos**, elegir "Seleccionar archivo" y coger una imagen (en el móvil abre la cámara).
+
+**Esperado:** la foto aparece en el parte y la cabecera muestra "GPS inicio" con unas coordenadas.
+
+**Firmas**
+
+1. Dibujar la firma del cliente con el dedo o el ratón en el recuadro.
+2. "Guardar firma". Repetir con la firma del técnico.
+
+**Esperado:** las dos firmas se muestran en el parte y **no** ofrecen borrar (son la prueba del cierre).
+
+**Albarán**
+
+1. Pulsar **"Completar"**.
+
+**Esperado:** aparece "Descargar albarán (PDF)" y "Compartir". El PDF incluye empresa, cliente, obra, campos, fotos y las dos firmas.
+
+> El PDF solo está disponible cuando el parte está completado.
+
+**Trabajo sin conexión** (la prueba importante)
+
+1. Abrir un parte en curso en el móvil o el navegador.
+2. **Cortar internet** (modo avión o parar el servidor).
+3. Rellenar un campo y pulsar "Guardar". Añadir una foto y firmar.
+4. Mirar la franja superior: debe decir **"Sin conexión: los cambios se guardan en el dispositivo"** con un contador de pendientes.
+5. Recuperar la conexión.
+
+**Esperado:** el contador desaparece solo, y al abrir el parte en otro dispositivo o recargar, **todo está allí**. Nada se ha perdido.
+
+> Si algo no sincroniza, pulsa "Reintentar" en la franja. Los cambios que el servidor rechaza por una regla (por ejemplo, un parte ya cerrado) se descartan y no bloquean al resto.
+
+---
+
+## 8. Prueba F — Permisos y aislamiento
 
 1. Cerrar sesión y entrar con `tecnico@electricidadsoler.es`.
 2. Intentar abrir `/clientes` directamente en la barra de direcciones.
@@ -174,7 +212,7 @@ Puedes cambiar el tipo de cada campo (texto, número, fecha, selección, casilla
 
 ---
 
-## 8. Prueba F — Sesión y seguridad
+## 9. Prueba G — Sesión y seguridad
 
 - **Cerrar sesión** → vuelve a `/login` y `/panel` deja de ser accesible.
 - **Revocar sesiones desde la base** (simula cerrar sesión en todos los dispositivos):
@@ -189,7 +227,7 @@ Recargar `/panel` sin cerrar sesión en el navegador → debe redirigir a `/logi
 
 ---
 
-## 9. Prueba G — Instalable como PWA
+## 10. Prueba H — Instalable como PWA
 
 1. Abrir <http://localhost:3100> en Chrome.
 2. Icono de instalar en la barra de direcciones (o menú → "Instalar aplicación").
@@ -201,7 +239,7 @@ Recargar `/panel` sin cerrar sesión en el navegador → debe redirigir a `/logi
 
 ---
 
-## 10. Ver la base de datos (opcional)
+## 11. Ver la base de datos (opcional)
 
 ```powershell
 & "C:\Program Files\PostgreSQL\17\bin\psql.exe" -h 127.0.0.1 -U signajob -d signajob_dev
@@ -238,7 +276,7 @@ SELECT title, values FROM work_orders;
 
 ---
 
-## 11. Problemas comunes
+## 12. Problemas comunes
 
 | Síntoma | Causa y solución |
 |---|---|
@@ -252,7 +290,7 @@ SELECT title, values FROM work_orders;
 
 ---
 
-## 12. Empezar de cero (destructivo)
+## 13. Empezar de cero (destructivo)
 
 Si quieres una base limpia, **esto borra todos los datos** de desarrollo:
 
