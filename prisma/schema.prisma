@@ -22,6 +22,9 @@ model Company {
   id        String   @id @default(cuid())
   name      String
   cif       String?
+  // Datos del emisor que aparecen en el albarán.
+  address   String?
+  phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

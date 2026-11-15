@@ -3,7 +3,11 @@ import { readAttachmentFile } from "@/lib/attachments/storage";
 import { getPrisma } from "@/lib/db";
 import { attachmentKindLabel } from "@/lib/domain/attachments";
 import { tenantScope } from "@/lib/domain/tenant";
-import { workOrderStatusLabel } from "@/lib/domain/work-orders";
+import {
+  formatSignatureDate,
+  resolveTechnicianName,
+  signatureSignerName,
+} from "@/lib/pdf/data";
 import { renderAlbaran, type AlbaranData } from "@/lib/pdf/render";
 import {
   formatCoordinates,
@@ -47,10 +51,17 @@ export async function GET(
       client: { select: { name: true, address: true, phone: true } },
       project: { select: { name: true } },
       assignedTo: { select: { name: true } },
-      company: { select: { name: true, cif: true } },
+      createdBy: { select: { name: true } },
+      company: { select: { name: true, cif: true, address: true, phone: true } },
       attachments: {
         orderBy: { createdAt: "asc" },
-        select: { id: true, kind: true, storageKey: true, mimeType: true },
+        select: {
+          id: true,
+          kind: true,
+          storageKey: true,
+          mimeType: true,
+          createdAt: true,
+        },
       },
     },
   });
@@ -65,6 +76,11 @@ export async function GET(
       ? (workOrder.values as Record<string, unknown>)
       : {};
 
+  const technicianName = resolveTechnicianName(
+    workOrder.assignedTo?.name ?? null,
+    workOrder.createdBy?.name ?? null,
+  );
+
   const photos: AlbaranData["photos"] = [];
   const signatures: AlbaranData["signatures"] = [];
 
@@ -78,6 +94,12 @@ export async function GET(
         signatures.push({
           id: attachment.id,
           label: attachmentKindLabel(attachment.kind),
+          name: signatureSignerName({
+            kind: attachment.kind,
+            clientName: workOrder.client.name,
+            technicianName,
+          }),
+          date: formatSignatureDate(attachment.createdAt),
           bytes,
         });
       }
@@ -107,13 +129,15 @@ export async function GET(
   const data: AlbaranData = {
     companyName: workOrder.company.name,
     companyCif: workOrder.company.cif,
+    companyAddress: workOrder.company.address,
+    companyPhone: workOrder.company.phone,
     title: workOrder.title,
-    status: workOrderStatusLabel(workOrder.status),
+    documentDate: workOrder.completedAt ?? workOrder.createdAt,
     clientName: workOrder.client.name,
     clientAddress: workOrder.client.address,
     clientPhone: workOrder.client.phone,
     projectName: workOrder.project?.name ?? null,
-    assignedTo: workOrder.assignedTo?.name ?? null,
+    technicianName,
     createdAt: workOrder.createdAt,
     startedAt: workOrder.startedAt,
     completedAt: workOrder.completedAt,

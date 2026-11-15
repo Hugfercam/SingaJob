@@ -19,6 +19,7 @@ export default async function MorePage() {
 
   const links = isOffice
     ? [
+        { href: "/mas/empresa", label: "Datos de la empresa" },
         { href: "/plantillas", label: "Plantillas de parte" },
         { href: "/equipo", label: "Equipo" },
         { href: "/clientes", label: "Clientes y obras" },

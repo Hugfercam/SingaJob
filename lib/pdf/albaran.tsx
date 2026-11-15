@@ -16,7 +16,8 @@ import {
 const styles = StyleSheet.create({
   page: {
     paddingTop: 36,
-    paddingBottom: 36,
+    // Deja sitio al pie fijo: sin esto, el texto podía quedar debajo.
+    paddingBottom: 52,
     paddingHorizontal: 32,
     fontSize: 9,
     fontFamily: "Helvetica",
@@ -54,7 +55,13 @@ const styles = StyleSheet.create({
   fieldLabel: { width: 150, fontFamily: "Helvetica-Bold" },
   fieldValue: { flex: 1 },
   photos: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
-  photo: { width: 165, height: 124, objectFit: "cover", borderWidth: 0.5, borderColor: "#cccccc" },
+  photo: {
+    width: 165,
+    height: 124,
+    objectFit: "cover",
+    borderWidth: 0.5,
+    borderColor: "#cccccc",
+  },
   signatures: { flexDirection: "row", gap: 16, marginTop: 4 },
   signatureBox: { flex: 1 },
   signatureImage: {
@@ -64,7 +71,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "#999999",
   },
-  signatureLabel: { fontSize: 8, color: "#666666", marginTop: 2 },
+  signatureName: { fontSize: 8, fontFamily: "Helvetica-Bold", marginTop: 3 },
+  signatureLabel: { fontSize: 7, color: "#666666", marginTop: 1 },
   footer: {
     position: "absolute",
     bottom: 20,
@@ -79,35 +87,47 @@ const styles = StyleSheet.create({
 export type AlbaranData = {
   companyName: string;
   companyCif: string | null;
+  companyAddress: string | null;
+  companyPhone: string | null;
   title: string;
-  status: string;
+  documentDate: Date;
   clientName: string;
   clientAddress: string | null;
   clientPhone: string | null;
   projectName: string | null;
-  assignedTo: string | null;
+  technicianName: string | null;
   createdAt: Date;
   completedAt: Date | null;
   startedAt: Date | null;
   coordinates: { label: string; value: string }[];
   fields: { label: string; value: string }[];
   photos: { id: string; bytes: Buffer }[];
-  signatures: { id: string; label: string; bytes: Buffer }[];
+  signatures: {
+    id: string;
+    label: string;
+    name: string;
+    date: string;
+    bytes: Buffer;
+  }[];
   generatedAt: Date;
 };
 
-function dateTime(value: Date | null): string {
-  if (!value) {
-    return "—";
-  }
+const DATE_TIME = new Intl.DateTimeFormat("es-ES", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
-  return new Intl.DateTimeFormat("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(value);
+const DATE = new Intl.DateTimeFormat("es-ES", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+
+function dateTime(value: Date | null): string {
+  return value ? DATE_TIME.format(value) : "—";
 }
 
 export function AlbaranDocument({ data }: { data: AlbaranData }) {
@@ -124,12 +144,18 @@ export function AlbaranDocument({ data }: { data: AlbaranData }) {
             {data.companyCif ? (
               <Text style={styles.companySmall}>CIF {data.companyCif}</Text>
             ) : null}
+            {data.companyAddress ? (
+              <Text style={styles.companySmall}>{data.companyAddress}</Text>
+            ) : null}
+            {data.companyPhone ? (
+              <Text style={styles.companySmall}>Tel. {data.companyPhone}</Text>
+            ) : null}
           </View>
           <View>
             <Text style={styles.docTitle}>ALBARÁN DE TRABAJO</Text>
             <Text style={styles.docMeta}>{data.title}</Text>
             <Text style={styles.docMeta}>
-              Estado: {data.status}
+              Fecha: {DATE.format(data.documentDate)}
             </Text>
           </View>
         </View>
@@ -158,7 +184,7 @@ export function AlbaranDocument({ data }: { data: AlbaranData }) {
           <Text style={styles.sectionTitle}>Trabajo</Text>
           <View style={styles.row}>
             <Text style={styles.label}>Técnico</Text>
-            <Text style={styles.value}>{data.assignedTo ?? "—"}</Text>
+            <Text style={styles.value}>{data.technicianName ?? "—"}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Inicio</Text>
@@ -210,14 +236,17 @@ export function AlbaranDocument({ data }: { data: AlbaranData }) {
                 <View key={signature.id} style={styles.signatureBox}>
                   {/* eslint-disable-next-line jsx-a11y/alt-text */}
                   <Image style={styles.signatureImage} src={signature.bytes} />
-                  <Text style={styles.signatureLabel}>{signature.label}</Text>
+                  <Text style={styles.signatureName}>{signature.name}</Text>
+                  <Text style={styles.signatureLabel}>
+                    {signature.label} · {signature.date}
+                  </Text>
                 </View>
               ))}
             </View>
           </View>
         ) : null}
 
-        <Text style={styles.footer}>
+        <Text style={styles.footer} fixed>
           Documento generado por SignaJob el {dateTime(data.generatedAt)}. La
           firma acredita la conformidad con el trabajo realizado.
         </Text>
