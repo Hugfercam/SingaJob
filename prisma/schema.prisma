@@ -27,6 +27,8 @@ model Company {
 
   users       User[]
   invitations Invitation[]
+  clients     Client[]
+  projects    Project[]
 
   @@map("companies")
 }
@@ -90,4 +92,50 @@ model Invitation {
 
   @@index([companyId, email])
   @@map("invitations")
+}
+
+enum ProjectStatus {
+  ACTIVE
+  PAUSED
+  FINISHED
+}
+
+// Cliente de la empresa (el que firma el albarán).
+model Client {
+  id        String   @id @default(cuid())
+  companyId String
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@index([companyId, name])
+  @@map("clients")
+}
+
+// Obra o proyecto de un cliente.
+// `companyId` está duplicado a propósito para poder filtrar por empresa sin
+// depender del join con el cliente; al crear se valida que coincida.
+model Project {
+  id        String        @id @default(cuid())
+  companyId String
+  clientId  String
+  name      String
+  address   String?
+  status    ProjectStatus @default(ACTIVE)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([clientId])
+  @@map("projects")
 }

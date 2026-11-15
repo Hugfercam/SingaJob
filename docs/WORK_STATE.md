@@ -6,16 +6,17 @@
 ## Última actualización
 - Fecha: 2026-11-15
 - Rama actual: `main`
-- Fase: Desarrollo — **T-001, T-002 y T-003 terminadas**
-- Estado: base de datos, autenticación, aislamiento por empresa, permisos por rol e invitaciones, todo verificado
+- Fase: Desarrollo — **T-001 a T-004 terminadas**
+- Estado: base, autenticación, invitaciones, clientes y obras, todo verificado
 
 ## Objetivo actual
 Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicación Next.js full-stack (panel + campo), con PostgreSQL y Prisma.
 
 ## Tarea activa
-- ID / enlace a `docs/tasks/`: ninguna abierta. [T-001](tasks/T-001-arranque-proyecto.md), [T-002](tasks/T-002-autenticacion.md) y [T-003](tasks/T-003-invitaciones.md) están **terminadas**.
+- ID / enlace a `docs/tasks/`: ninguna abierta. [T-001](tasks/T-001-arranque-proyecto.md), [T-002](tasks/T-002-autenticacion.md), [T-003](tasks/T-003-invitaciones.md) y [T-004](tasks/T-004-clientes-proyectos.md) están **terminadas**.
 - Estado: sin bloqueos técnicos
-- Próximo paso concreto: T-004 — clientes y proyectos (ficha antes de implementar)
+- Próximo paso concreto: T-005 — plantillas de parte y partes de trabajo
+- Guía para probar a mano: [GUIA_PRUEBAS.md](GUIA_PRUEBAS.md)
 
 ## Hechos verificados
 - Stack: Next 16.4.6, React 19.3.0, Prisma 7.10.1 + `@prisma/adapter-pg`, TypeScript 5.9.3, Tailwind 4.3.3, Vitest 5.1.0, ESLint 9.
@@ -26,8 +27,11 @@ Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicació
 - Verificado en navegador: registro, login, logout, email duplicado, contraseña incorrecta, guard de rol, aislamiento entre dos empresas, sesión revocada desde la base y cookie inventada (`307` a `/login`).
 - Invitaciones (T-003): tabla `invitations` con token hasheado, caducidad de 7 días, uso único y revocación. Verificado en navegador: crear enlace, aceptar, reusar, reinvitar, revocar, caducar, email de otra empresa y reactivación de inactivos.
 - **Regla fijada en D-007:** la sesión se lee con `readSession()` desde las cabeceras. **No usar `cookies()` para leer** dentro de Server Actions: rompe con `cacheComponents` en Next 16.
+- Clientes y obras (T-004): tablas `clients` y `projects` con enum `ProjectStatus`. Búsqueda por nombre, teléfono, email y dirección; fichas, edición y cambio de estado. Verificado en navegador, incluido el aislamiento con una gestora de otra empresa.
+- **Tras cada migración hay que ejecutar `npx prisma generate`**: en esta versión, `migrate dev` no regeneró el cliente y el build falló con modelos inexistentes.
+- `npm run hash-password -- "..."` genera el hash de una contraseña nueva para resetearla en local (no hay recuperación por email).
 - `users.email` es único **global** (D-006): pendiente resolver cómo afecta a las invitaciones.
-- **Datos de prueba en la base de desarrollo:** empresas `Reformas Peña S.L.` (un administrador y una técnica) y `Electricidad Soler` (un técnico), más una invitación pendiente para `ana@reformaspena.es`. Se pueden borrar sin tocar el código.
+- **Datos de prueba en la base de desarrollo:** empresas `Reformas Peña S.L.` (un administrador y una técnica) y `Electricidad Soler` (un técnico), una invitación pendiente para `ana@reformaspena.es`, y dos clientes con una obra. Se pueden borrar sin tocar el código.
 - `psql` no está en el `PATH`: usar `C:\Program Files\PostgreSQL\17\bin\psql.exe`. Contraseña del superusuario local: `postgres`; rol de la app: `signajob`.
 
 ## Cambios locales o trabajo sin integrar
@@ -42,6 +46,7 @@ Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicació
 | Compilación (`npm run build`) | Correcto | 2026-11-15: 9 rutas |
 | Autenticación de extremo a extremo | Correcto | 2026-11-15: navegador real + consultas a la base |
 | Invitaciones de extremo a extremo | Correcto | 2026-11-15: navegador real; caducidad comprobada con un token de control |
+| Clientes y obras de extremo a extremo | Correcto | 2026-11-15: alta, búsqueda por teléfono, edición y cambio de estado |
 | Migraciones | Correcto | 2026-11-15: al día |
 
 ## Bloqueos, riesgos o decisiones pendientes

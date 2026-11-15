@@ -13,6 +13,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "hash-password": "node scripts/hash-password.mts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
