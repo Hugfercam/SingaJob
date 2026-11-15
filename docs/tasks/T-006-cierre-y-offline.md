@@ -160,3 +160,24 @@ Se entrega en **dos partes**, cada una verificada y con su commit, para no rompe
 - **Datos de prueba:** partes `wo_api` (completado con foto y GPS) y `wo_offline` (completado desde la cola offline).
 - **Siguiente paso:** T-007 — dashboard y diseño.
 - **Commit:** `feat: cierre del parte con fotos, firma, PDF y trabajo sin conexión`.
+
+## 11. Pulido pendiente del albarán (detectado en una prueba real)
+
+Probado el flujo completo con una empresa real y el PDF se genera correctamente
+(incluye cliente, GPS, foto y las dos firmas). Lo que queda para una tarea de
+pulido, por orden de importancia:
+
+1. **El técnico sale como «—» aunque haya firmado.** El PDF solo mira el usuario
+   asignado; si el parte no se asignó a nadie, la firma del técnico queda sin
+   nombre. Debe caer al usuario que completó el parte.
+2. **Faltan los datos del emisor.** Un albarán debe llevar nombre, CIF y
+   dirección de la empresa. `Company` guarda CIF pero no dirección, y el PDF no
+   la imprime.
+3. **Las firmas no llevan nombre ni fecha debajo.** Añadirlos refuerza el valor
+   probatorio del documento, que es justo lo que se vende.
+4. **«Estado: Completado» es jerga interna** en un documento que lee el cliente:
+   sobra o debe decir «Finalizado».
+5. **Comprobar el pie** («Documento generado por SignaJob…»): con el contenido
+   actual puede quedar tapado por el bloque de firmas en partes con muchas fotos.
+6. **Logo de la empresa**, que la empresa aún no puede subir (no hay campo ni
+   subida): queda para cuando se añada el logo en la configuración.
