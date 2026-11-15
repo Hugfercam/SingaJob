@@ -30,21 +30,42 @@ model Company {
   @@map("companies")
 }
 
-// Usuario de una empresa. El email es único dentro de cada empresa,
-// no globalmente: dos empresas distintas pueden compartir el mismo email.
+// Usuario de una empresa.
+// El email es único GLOBAL, no por empresa: el login se hace con email y
+// contraseña sin pedir la empresa, así que dos empresas no pueden compartirlo.
 model User {
-  id        String   @id @default(cuid())
-  companyId String
-  email     String
-  name      String
-  role      Role     @default(TECHNICIAN)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  companyId    String
+  email        String   @unique
+  name         String
+  role         Role     @default(TECHNICIAN)
+  active       Boolean  @default(true)
+  // Hash en formato versionado (`scrypt$N$r$p$sal$hash`). Nunca la contraseña.
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  sessions Session[]
 
-  @@unique([companyId, email])
   @@index([companyId])
   @@map("users")
+}
+
+// Sesión de un usuario. Se guarda el HASH del token, no el token:
+// una filtración de la base de datos no permite suplantar sesiones.
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  lastUsedAt DateTime @default(now())
+  userAgent  String?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
 }

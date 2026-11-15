@@ -88,3 +88,35 @@
   - El rol de desarrollo necesita **`CREATEDB`**, porque `prisma migrate dev` crea una base *shadow* para calcular la migración. En producción se usa `prisma migrate deploy`, que no la necesita.
   - **Sigue pendiente** el PostgreSQL de producción, que probablemente sea un servicio gestionado (candidato: Neon) y necesitará su propia `DATABASE_URL` y estrategia de copias.
 - **Referencia:** `docs/tasks/T-001-arranque-proyecto.md` §5.1; `SIGNAJOB_PROYECTO.md` §10.2.
+
+### D-005 — Autenticación con sesiones propias, sin librería
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** El MVP exige email y contraseña con sesión persistente (la PWA se instala en el móvil). No hay OAuth ni SSO en el alcance. Los modelos `Company` y `User` ya estaban migrados con el enum de roles.
+- **Opciones estudiadas:**
+  - *Sesiones propias:* sin dependencias (`node:crypto`), control total de caducidad y revocación, encaje exacto con los modelos existentes. Riesgo: implementar criptografía a mano.
+  - *Better Auth:* trae sesiones, organizaciones e invitaciones, pero con tablas propias (`user`, `session`, `organization`, `member`) que se solapan con el modelo ya migrado.
+  - *Auth.js (NextAuth v5):* el más extendido, pero en beta y su adaptador asume el cliente clásico de Prisma, no el generador nuevo de Prisma 7.
+- **Decisión:** Sesiones propias. Token aleatorio de 32 bytes en cookie `httpOnly`; en la base se guarda solo su hash SHA-256. Contraseñas con `scrypt` de Node, sal por usuario y comparación en tiempo constante. Sesión con caducidad absoluta (30 días) y por inactividad (7 días).
+- **Consecuencias:**
+  - Cero dependencias nuevas en la ruta crítica de seguridad y ninguna atadura a un proveedor.
+  - Las propiedades críticas quedan cubiertas por pruebas (formato, sal, Unicode, manipulación, parámetros fuera de rango).
+  - **El coste se paga al añadir OAuth** ("entrar con Google", previsto en V2): habrá que implementarlo sobre este sistema o migrar a una librería. Si OAuth se adelanta, la alternativa correcta pasa a ser Better Auth.
+  - El límite de intentos de login es en memoria del proceso: **no protege en un despliegue multi-instancia**. Deberá moverse a un almacén compartido antes de producción.
+- **Referencia:** `docs/tasks/T-002-autenticacion.md`; `lib/auth/*`.
+
+### D-006 — El email de usuario es único global, no por empresa
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** El modelo inicial (D-003 y T-001) definía el único como `(companyId, email)`, heredado de un esquema multi-tenant clásico. Pero el login es solo con email y contraseña, sin pedir la empresa: con unicidad por empresa, un mismo email en dos empresas haría el login ambiguo o habría que añadir un selector de empresa.
+- **Opciones estudiadas:**
+  - *Único por empresa:* permite que una persona pertenezca a varias empresas con el mismo email, pero complica el login y exige resolver la ambigüedad en cada intento.
+  - *Único global:* login inequívoco y una sola cuenta por persona. Impide que el mismo email esté en dos empresas.
+- **Decisión:** `users.email` pasa a ser único global (índice único, migración `20261115142500_add_auth`). Se sustituye el único `(companyId, email)`.
+- **Consecuencias:**
+  - El login es inequívoco y la comprobación de duplicados en el registro es simple.
+  - **Afecta a las invitaciones (T-003):** invitar a alguien que ya tiene cuenta en otra empresa no puede crear un usuario nuevo. Habrá que decidir si se le añade a la nueva empresa (varias empresas por usuario) o si se le pide otra cuenta. Esa decisión llega con T-003.
+  - Cambiar esto después, con datos reales, implicaría migrar usuarios: hacerlo ahora ha costado una línea.
+- **Referencia:** `prisma/schema.prisma`; `docs/tasks/T-002-autenticacion.md`.

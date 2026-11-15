@@ -53,7 +53,7 @@ Digitalizar el día a día del sector sin informático ni ERP, desde el móvil, 
 > Esta lista expresa la visión. El alcance aprobado está en la sección 6.
 
 **MVP**
-- [ ] Alta de empresa y administrador, con sesión persistente
+- [x] Alta de empresa y administrador, con sesión persistente
 - [ ] Empleados con rol e invitación por enlace
 - [ ] Clientes y proyectos (obras) con dirección
 - [ ] Plantillas de parte con campos tipados y 3 plantillas de ejemplo
@@ -114,7 +114,7 @@ Decidido (2026-11-15):
 - **PostgreSQL + Prisma** como base de datos.
 - **PWA instalable** con service worker, sin app nativa ni tiendas.
 
-Pendiente de decidir: método de autenticación, estrategia concreta de sincronización sin conexión, generación de PDF, almacenamiento de fotos, envío de email y hosting + PostgreSQL de producción. El entorno local ya está decidido: PostgreSQL 17 instalado (D-004).
+Pendiente de decidir: estrategia concreta de sincronización sin conexión, generación de PDF, almacenamiento de fotos, envío de email y hosting + PostgreSQL de producción. Ya decididos: PostgreSQL 17 en local (D-004) y autenticación con sesiones propias (D-005).
 
 Detalle, alternativas descartadas y consecuencias en [docs/DECISIONS.md](docs/DECISIONS.md) (D-001, D-002, D-003).
 
@@ -124,9 +124,9 @@ App nativa si el campo lo exige, firma remota, presupuestos generados automátic
 
 ## 11. Estado y siguientes pasos
 
-- **Fase actual:** Desarrollo. T-001 terminada: repositorio Git, aplicación Next.js 16 con Prisma 7, PostgreSQL 17 en local, migración inicial aplicada y PWA instalable. Todavía sin autenticación.
-- **Decisión pendiente:** método de autenticación, estrategia de sincronización offline y hosting + PostgreSQL de producción.
-- **Siguiente paso:** T-002 — autenticación, sesiones y permisos por rol.
+- **Fase actual:** Desarrollo. T-001 y T-002 terminadas: repositorio Git, aplicación Next.js 16 con Prisma 7, PostgreSQL 17 local, PWA instalable, autenticación con sesión persistente, aislamiento por empresa y permisos por rol. Todavía sin clientes, partes ni invitaciones.
+- **Decisión pendiente:** invitaciones de empleados, estrategia de sincronización offline y hosting + PostgreSQL de producción.
+- **Siguiente paso:** T-003 (invitaciones) o T-004 (clientes y proyectos).
 
 ---
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6 py-12">
@@ -12,11 +14,20 @@ export default function Home() {
         </p>
       </div>
 
-      <p className="text-sm text-neutral-500">
-        Esta es la base del proyecto: la aplicación, el acceso a datos y la
-        instalación como PWA ya funcionan. Las pantallas de trabajo llegan en
-        las próximas tareas.
-      </p>
+      <div className="flex flex-col gap-3">
+        <Link
+          className="rounded-lg bg-emerald-800 px-4 py-2.5 text-center font-medium text-white transition hover:bg-emerald-900"
+          href="/registro"
+        >
+          Crear cuenta de empresa
+        </Link>
+        <Link
+          className="rounded-lg border border-neutral-300 px-4 py-2.5 text-center font-medium text-neutral-800 transition hover:bg-neutral-100"
+          href="/login"
+        >
+          Entrar
+        </Link>
+      </div>
 
       <a
         className="text-sm font-medium text-emerald-800 underline underline-offset-4"
