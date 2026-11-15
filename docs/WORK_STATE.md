@@ -14,8 +14,8 @@ Construir SignaJob como **SaaS en forma de PWA instalable**: una sola aplicació
 
 ## Tarea activa
 - ID / enlace a `docs/tasks/`: [T-007 — Dashboard e identidad visual](tasks/T-007-dashboard-y-diseno.md)
-- Estado: **T-007a entregada** (tokens, componentes, navegación y modo obra). T-001 a T-006 terminadas.
-- Próximo paso concreto: revisar a mano el panel y el modo obra; después T-007b (dashboard completo y pantallas restantes)
+- Estado: **T-007a y T-007b entregadas** (sistema de diseño, navegación, modo obra y dashboard). T-001 a T-006 terminadas.
+- Próximo paso concreto: migrar a los componentes nuevos las pantallas restantes (ficha de parte, equipo, plantillas, invitación, registro y home) y medir Lighthouse
 - Guía para probar a mano: [GUIA_PRUEBAS.md](GUIA_PRUEBAS.md)
 
 ## Hechos verificados
