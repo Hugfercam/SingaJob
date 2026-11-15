@@ -120,3 +120,20 @@
   - **Afecta a las invitaciones (T-003):** invitar a alguien que ya tiene cuenta en otra empresa no puede crear un usuario nuevo. Habrá que decidir si se le añade a la nueva empresa (varias empresas por usuario) o si se le pide otra cuenta. Esa decisión llega con T-003.
   - Cambiar esto después, con datos reales, implicaría migrar usuarios: hacerlo ahora ha costado una línea.
 - **Referencia:** `prisma/schema.prisma`; `docs/tasks/T-002-autenticacion.md`.
+
+### D-007 — La sesión se lee de las cabeceras, no con `cookies()`, dentro de Server Actions
+
+- **Fecha:** 2026-11-15
+- **Estado:** Aprobada
+- **Contexto:** Al implementar las invitaciones, la acción `inviteEmployee` autorizaba con `requireRole()`, que leía la sesión con `cookies()`. Next 16, con `cacheComponents` activo, re-renderiza la ruta después de cada Server Action en la misma petición y lanzaba `InvariantError: Received an underlying cookies object that does not match either cookies or mutableCookies`. El resultado era un `500` en `POST /equipo` y la página en blanco.
+- **Opciones estudiadas:**
+  - *Leer el token de la cabecera `Cookie` con `headers()`:* funciona igual en render y en acción.
+  - *Dejar de autorizar desde la acción:* inviable, la comprobación tiene que ser en servidor.
+  - *Desactivar `cacheComponents`:* renunciar a una decisión de arquitectura por un fallo concreto.
+- **Decisión:** `readSession()` obtiene el token parseando la cabecera `Cookie` mediante `headers()`. `cookies()` se reserva para **escribir y borrar** la cookie en login, logout y aceptación de invitación.
+- **Consecuencias:**
+  - Autorizar desde una Server Action es seguro y el re-render posterior no rompe.
+  - **Regla para el futuro:** cualquier código que necesite la sesión usa `readSession()`; nadie debe leer la cookie con `cookies()`. Escribirla sigue siendo con `cookies()` y solo en acciones o route handlers.
+  - Se parsea la cabecera a mano (formato `nombre=valor; …` de RFC 6265). Es código propio que hay que mantener, pero es estable y está cubierto por la verificación en navegador.
+  - Si Next corrige el fallo, se puede volver a `cookies()`; no urge.
+- **Referencia:** `lib/auth/session.ts`; `docs/tasks/T-003-invitaciones.md` §8.

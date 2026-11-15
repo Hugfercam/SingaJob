@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import { getPrisma } from "@/lib/db";
 import type { Role } from "@/lib/generated/prisma/client";
@@ -33,10 +33,52 @@ export type AuthContext = {
   };
 };
 
+/** Extrae una cookie concreta de la cabecera `Cookie`, sin usar `cookies()`. */
+function readCookieValue(header: string | null, name: string): string | null {
+  if (!header) {
+    return null;
+  }
+
+  for (const part of header.split(";")) {
+    const trimmed = part.trim();
+    const separator = trimmed.indexOf("=");
+
+    if (separator === -1) {
+      continue;
+    }
+
+    if (trimmed.slice(0, separator) === name) {
+      return decodeURIComponent(trimmed.slice(separator + 1));
+    }
+  }
+
+  return null;
+}
+
+async function readSessionToken(): Promise<string | null> {
+  const requestHeaders = await headers();
+
+  return readCookieValue(requestHeaders.get("cookie"), SESSION_COOKIE);
+}
+
 type SessionMeta = {
   userAgent?: string | null;
   ip?: string | null;
 };
+
+/**
+ * Datos del navegador para guardar con la sesión. El `user-agent` sirve para
+ * que el usuario reconozca sus dispositivos; no se usa para autorizar nada.
+ */
+export async function requestMeta(): Promise<SessionMeta> {
+  const requestHeaders = await headers();
+  const forwarded = requestHeaders.get("x-forwarded-for");
+
+  return {
+    userAgent: requestHeaders.get("user-agent"),
+    ip: forwarded ? forwarded.split(",")[0]?.trim() : null,
+  };
+}
 
 export async function createSession(
   userId: string,
@@ -72,12 +114,18 @@ export async function createSession(
 /**
  * Resuelve la sesión de la petición actual.
  *
+ * Lee el token de la cabecera `Cookie` en lugar de `cookies()`. En Next 16 con
+ * `cacheComponents`, llamar a `cookies()` dentro de una Server Action provoca
+ * un error interno cuando la página se re-renderiza en la misma petición
+ * ("Received an underlying cookies object that does not match...").
+ * `headers()` funciona igual en render y en acción, así que autorizar desde una
+ * acción es seguro.
+ *
  * Devuelve `null` ante cualquier anomalía (sin cookie, token desconocido,
  * caducado, inactivo o usuario desactivado) y borra la sesión inservible.
  */
 export async function readSession(): Promise<AuthContext | null> {
-  const store = await cookies();
-  const token = store.get(SESSION_COOKIE)?.value;
+  const token = await readSessionToken();
 
   if (!token) {
     return null;
@@ -143,8 +191,7 @@ export async function readSession(): Promise<AuthContext | null> {
 
 /** Destruye la sesión actual en el servidor y borra la cookie. */
 export async function destroySession(): Promise<void> {
-  const store = await cookies();
-  const token = store.get(SESSION_COOKIE)?.value;
+  const token = await readSessionToken();
 
   if (token) {
     await getPrisma()
@@ -152,6 +199,7 @@ export async function destroySession(): Promise<void> {
       .catch(() => undefined);
   }
 
+  const store = await cookies();
   store.delete(SESSION_COOKIE);
 }
 

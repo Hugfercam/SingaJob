@@ -54,7 +54,7 @@ Digitalizar el día a día del sector sin informático ni ERP, desde el móvil, 
 
 **MVP**
 - [x] Alta de empresa y administrador, con sesión persistente
-- [ ] Empleados con rol e invitación por enlace
+- [x] Empleados con rol e invitación por enlace
 - [ ] Clientes y proyectos (obras) con dirección
 - [ ] Plantillas de parte con campos tipados y 3 plantillas de ejemplo
 - [ ] Partes: crear desde plantilla, asignar, estados (pendiente → en curso → completado → firmado, y cancelado)
@@ -124,9 +124,9 @@ App nativa si el campo lo exige, firma remota, presupuestos generados automátic
 
 ## 11. Estado y siguientes pasos
 
-- **Fase actual:** Desarrollo. T-001 y T-002 terminadas: repositorio Git, aplicación Next.js 16 con Prisma 7, PostgreSQL 17 local, PWA instalable, autenticación con sesión persistente, aislamiento por empresa y permisos por rol. Todavía sin clientes, partes ni invitaciones.
-- **Decisión pendiente:** invitaciones de empleados, estrategia de sincronización offline y hosting + PostgreSQL de producción.
-- **Siguiente paso:** T-003 (invitaciones) o T-004 (clientes y proyectos).
+- **Fase actual:** Desarrollo. T-001, T-002 y T-003 terminadas: repositorio Git, aplicación Next.js 16 con Prisma 7, PostgreSQL 17 local, PWA instalable, autenticación con sesión persistente, aislamiento por empresa, permisos por rol e invitaciones de empleados por enlace. Todavía sin clientes ni partes.
+- **Decisión pendiente:** estrategia de sincronización offline y hosting + PostgreSQL de producción.
+- **Siguiente paso:** T-004 — clientes y proyectos.
 
 ---
 

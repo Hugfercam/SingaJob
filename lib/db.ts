@@ -36,3 +36,16 @@ export function getPrisma(): PrismaClient {
 
   return globalForPrisma.signajobPrisma;
 }
+
+/**
+ * Detecta una violación de restricción única de PostgreSQL (Prisma P2002).
+ * Sirve para convertir una carrera en un mensaje claro en lugar de un 500.
+ */
+export function isUniqueViolation(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === "P2002"
+  );
+}

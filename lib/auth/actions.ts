@@ -1,15 +1,15 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getPrisma } from "@/lib/db";
+import { getPrisma, isUniqueViolation } from "@/lib/db";
 import { isValidEmail, normalizeEmail } from "@/lib/domain/email";
+import { readField } from "@/lib/forms";
 import { Role } from "@/lib/generated/prisma/client";
 
 import { hashPassword, verifyPassword } from "./password";
 import { checkRateLimit, resetRateLimit } from "./rate-limit";
-import { createSession, destroySession } from "./session";
+import { createSession, destroySession, requestMeta } from "./session";
 
 const MIN_PASSWORD_LENGTH = 10;
 const MAX_PASSWORD_LENGTH = 200;
@@ -29,32 +29,6 @@ export type AuthFormValues = {
 };
 
 export type AuthState = { error: string; values?: AuthFormValues } | null;
-
-function readField(formData: FormData, key: string, trim = true): string {
-  const raw = formData.get(key);
-  const value = typeof raw === "string" ? raw : "";
-
-  return trim ? value.trim() : value;
-}
-
-async function sessionMeta() {
-  const requestHeaders = await headers();
-  const forwarded = requestHeaders.get("x-forwarded-for");
-
-  return {
-    userAgent: requestHeaders.get("user-agent"),
-    ip: forwarded ? forwarded.split(",")[0]?.trim() : null,
-  };
-}
-
-function isUniqueViolation(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code?: unknown }).code === "P2002"
-  );
-}
 
 /** Alta de empresa y de su primer usuario administrador, en una transacción. */
 export async function registerCompany(
@@ -145,7 +119,7 @@ export async function registerCompany(
     return { error: "No se pudo crear la cuenta. Inténtalo de nuevo.", values };
   }
 
-  await createSession(userId, await sessionMeta());
+  await createSession(userId, await requestMeta());
   redirect("/panel");
 }
 
@@ -193,7 +167,7 @@ export async function login(
   }
 
   resetRateLimit(limitKey);
-  await createSession(user.id, await sessionMeta());
+  await createSession(user.id, await requestMeta());
   redirect("/panel");
 }
 

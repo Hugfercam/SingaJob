@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // Permite abrir la app por 127.0.0.1 en desarrollo, además de localhost.
+  allowedDevOrigins: ["127.0.0.1"],
 };
 
 export default nextConfig;
