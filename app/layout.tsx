@@ -29,10 +29,24 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
+/**
+ * El modo obra se aplica antes de pintar, leyendo la preferencia guardada.
+ * Sin esto, la pantalla aparecería en modo oficina y saltaría al cargar.
+ */
+const densityScript = `
+try {
+  var mode = localStorage.getItem("signajob:density");
+  if (mode === "field") document.documentElement.dataset.density = "field";
+} catch (e) {}
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es">
-      <body className="bg-white text-neutral-900 antialiased">{children}</body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: densityScript }} />
+      </head>
+      <body className="bg-paper text-ink antialiased">{children}</body>
     </html>
   );
 }

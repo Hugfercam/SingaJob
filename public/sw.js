@@ -6,7 +6,7 @@
  *
  * Solo se registra en producción (ver OfflineIndicator).
  */
-const VERSION = "signajob-v1";
+const VERSION = "signajob-v2";
 const SHELL_CACHE = `${VERSION}-shell`;
 const PAGES_CACHE = `${VERSION}-pages`;
 
@@ -75,7 +75,23 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/")) {
+  // Estáticos: red primero y copia como respaldo. Con cache-first, un despliegue
+  // nuevo seguía sirviendo CSS y JS viejos mientras el nombre de caché no
+  // cambiara. Así se ve siempre lo último y, sin red, sigue funcionando.
+  if (url.pathname.startsWith("/_next/static/")) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(SHELL_CACHE).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch((error) => caches.match(request).then((cached) => cached ?? Promise.reject(error))),
+    );
+    return;
+  }
+
+  if (url.pathname.startsWith("/icons/")) {
     event.respondWith(
       caches.match(request).then(
         (cached) =>

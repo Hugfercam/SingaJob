@@ -3,11 +3,11 @@
 import { useActionState } from "react";
 
 import { login, type AuthState } from "@/lib/auth/actions";
+import { buttonClass, controlClass } from "@/components/ui/primitives";
 
 const initialState: AuthState = null;
 
-const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+const fieldClass = controlClass;
 
 export function LoginForm() {
   const [state, formAction, pending] = useActionState(login, initialState);
@@ -50,7 +50,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-lg bg-emerald-800 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className={buttonClass({ size: "lg", className: "mt-2 w-full" })}
       >
         {pending ? "Entrando…" : "Entrar"}
       </button>

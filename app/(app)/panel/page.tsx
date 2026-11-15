@@ -1,132 +1,148 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { logout } from "@/lib/auth/actions";
 import { requireSession } from "@/lib/auth/guards";
 import { countClientsAndProjects } from "@/lib/clients/queries";
-import { roleLabel } from "@/lib/domain/roles";
-import { Role } from "@/lib/generated/prisma/client";
-import { countWorkOrders } from "@/lib/work-orders/queries";
+import {
+  buttonClass,
+  Card,
+  SectionTitle,
+  Stat,
+  StatusBadge,
+} from "@/components/ui/primitives";
+import { workOrderStatusLabel } from "@/lib/domain/work-orders";
+import { Role, type WorkOrderStatus } from "@/lib/generated/prisma/client";
+import { countWorkOrders, listWorkOrders } from "@/lib/work-orders/queries";
 
 export const metadata: Metadata = {
-  title: "Panel",
+  title: "Hoy",
 };
 
 // Depende de la sesión: se renderiza en cada petición, nunca en el build.
 export const instant = false;
 
-export default async function PanelPage() {
+const TONE: Record<WorkOrderStatus, "neutral" | "active" | "done" | "danger"> = {
+  PENDING: "neutral",
+  IN_PROGRESS: "active",
+  COMPLETED: "done",
+  CANCELLED: "danger",
+};
+
+const dateFormat = new Intl.DateTimeFormat("es-ES", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
+
+export default async function HomePage() {
   const { user, company } = await requireSession();
   const isOffice = user.role === Role.ADMIN || user.role === Role.MANAGER;
 
   const viewer = { role: user.role, userId: user.id };
-  const [workOrders, { clients, projects }] = await Promise.all([
+  const [counts, company_, recent] = await Promise.all([
     countWorkOrders(company.id, viewer),
     countClientsAndProjects(company.id),
+    listWorkOrders(company.id, viewer),
   ]);
 
+  const top = recent.slice(0, 3);
+  const today = dateFormat.format(new Date());
+
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-8 px-6 py-12">
+    <>
       <header className="flex flex-col gap-1">
-        <p className="text-sm font-medium tracking-wide text-emerald-800 uppercase">
-          {company.name}
-        </p>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Hola, {user.name}
+        <p className="text-sm text-ink-soft capitalize">{today}</p>
+        <h1 className="font-display text-3xl leading-tight font-semibold text-ink">
+          Hola, {user.name.split(" ")[0]}
         </h1>
-        <p className="text-sm text-neutral-600">
-          {user.email} · {roleLabel(user.role)}
+        <p className="text-sm text-ink-soft">
+          {isOffice
+            ? counts.pending + counts.inProgress === 0
+              ? "No tienes trabajos abiertos."
+              : `Tienes ${counts.pending + counts.inProgress} trabajos abiertos.`
+            : "Estos son tus trabajos asignados."}
         </p>
       </header>
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
-          {isOffice ? "Partes" : "Mis partes"}
-        </h2>
-        <dl className="grid grid-cols-3 gap-2">
-          <div className="rounded-lg border border-neutral-200 px-3 py-2">
-            <dt className="text-xs text-neutral-500">Pendientes</dt>
-            <dd className="text-xl font-semibold text-neutral-900">
-              {workOrders.pending}
-            </dd>
-          </div>
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
-            <dt className="text-xs text-emerald-900">En curso</dt>
-            <dd className="text-xl font-semibold text-emerald-900">
-              {workOrders.inProgress}
-            </dd>
-          </div>
-          <div className="rounded-lg border border-neutral-200 px-3 py-2">
-            <dt className="text-xs text-neutral-500">Completados</dt>
-            <dd className="text-xl font-semibold text-neutral-900">
-              {workOrders.completed}
-            </dd>
-          </div>
-        </dl>
+      <section className="flex flex-col gap-3">
+        <SectionTitle>Partes</SectionTitle>
+        <div className="grid grid-cols-3 gap-2">
+          <Stat label="En curso" value={counts.inProgress} tone="active" />
+          <Stat label="Pendientes" value={counts.pending} />
+          <Stat label="Completados" value={counts.completed} />
+        </div>
       </section>
 
       {isOffice ? (
-        <section className="flex flex-col gap-2">
-          <h2 className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+        <section className="flex flex-col gap-3">
+          <SectionTitle
+            action={
+              <Link
+                href="/clientes"
+                className="text-sm font-medium text-brand underline underline-offset-4"
+              >
+                Ver todos
+              </Link>
+            }
+          >
             Empresa
-          </h2>
-          <dl className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg border border-neutral-200 px-3 py-2">
-              <dt className="text-xs text-neutral-500">Clientes</dt>
-              <dd className="text-xl font-semibold text-neutral-900">
-                {clients}
-              </dd>
-            </div>
-            <div className="rounded-lg border border-neutral-200 px-3 py-2">
-              <dt className="text-xs text-neutral-500">Obras</dt>
-              <dd className="text-xl font-semibold text-neutral-900">
-                {projects}
-              </dd>
-            </div>
-          </dl>
+          </SectionTitle>
+          <div className="grid grid-cols-2 gap-2">
+            <Stat label="Clientes" value={company_.clients} />
+            <Stat label="Obras" value={company_.projects} />
+          </div>
         </section>
       ) : null}
 
-      <nav className="flex flex-col gap-2">
-        <Link
-          className="rounded-lg bg-emerald-800 px-4 py-2.5 text-center font-medium text-white transition hover:bg-emerald-900"
-          href="/partes"
-        >
-          {isOffice ? "Partes de trabajo" : "Mis partes"}
-        </Link>
+      <Link href="/partes" className={buttonClass({ size: "lg", className: "w-full" })}>
+        {isOffice ? "Ver partes de trabajo" : "Ver mis partes"}
+      </Link>
 
-        {isOffice ? (
-          <>
+      <section className="flex flex-col gap-3">
+        <SectionTitle
+          action={
             <Link
-              className="rounded-lg border border-neutral-300 px-4 py-2.5 text-center font-medium text-neutral-800 transition hover:bg-neutral-100"
-              href="/clientes"
+              href="/partes"
+              className="text-sm font-medium text-brand underline underline-offset-4"
             >
-              Clientes y obras
+              Todos
             </Link>
-            <Link
-              className="rounded-lg border border-neutral-300 px-4 py-2.5 text-center font-medium text-neutral-800 transition hover:bg-neutral-100"
-              href="/plantillas"
-            >
-              Plantillas
-            </Link>
-            <Link
-              className="rounded-lg border border-neutral-300 px-4 py-2.5 text-center font-medium text-neutral-800 transition hover:bg-neutral-100"
-              href="/equipo"
-            >
-              Equipo
-            </Link>
-          </>
-        ) : null}
-      </nav>
-
-      <form action={logout}>
-        <button
-          type="submit"
-          className="rounded-lg border border-neutral-300 px-4 py-2.5 font-medium text-neutral-800 transition hover:bg-neutral-100"
+          }
         >
-          Cerrar sesión
-        </button>
-      </form>
-    </main>
+          Últimos partes
+        </SectionTitle>
+
+        {top.length === 0 ? (
+          <Card className="px-4 py-6 text-center text-sm text-ink-soft">
+            Todavía no hay partes. Crea el primero desde “Partes”.
+          </Card>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {top.map((workOrder) => (
+              <li key={workOrder.id}>
+                <Link href={`/partes/${workOrder.id}`} className="block">
+                  <Card className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-brand-soft/30">
+                    <span className="flex min-w-0 flex-col">
+                      <span className="truncate font-medium text-ink">
+                        {workOrder.title}
+                      </span>
+                      <span className="truncate text-sm text-ink-soft">
+                        {workOrder.clientName}
+                        {workOrder.assigneeName
+                          ? ` · ${workOrder.assigneeName}`
+                          : " · sin asignar"}
+                      </span>
+                    </span>
+                    <StatusBadge tone={TONE[workOrder.status]}>
+                      {workOrderStatusLabel(workOrder.status)}
+                    </StatusBadge>
+                  </Card>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </>
   );
 }

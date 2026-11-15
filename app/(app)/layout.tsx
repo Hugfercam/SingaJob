@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { connection } from "next/server";
 
-import { OfflineIndicator } from "@/components/offline/offline-indicator";
+import { AppShell } from "@/components/shell/app-shell";
 import { requireSession } from "@/lib/auth/guards";
 
 /**
@@ -13,26 +13,18 @@ import { requireSession } from "@/lib/auth/guards";
  */
 export const instant = false;
 
-/**
- * Layout del área privada.
- *
- * La sesión se comprueba aquí, en el servidor, y no con middleware: así ninguna
- * página del grupo puede renderizarse sin usuario, aunque alguien olvide
- * llamar al guard en una ruta nueva.
- */
-export default async function AppLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function AppLayout({ children }: { children: ReactNode }) {
   // Leer cookies es acceso dinámico: no puede prerenderizarse.
   await connection();
-  await requireSession();
+  const { user, company } = await requireSession();
 
   return (
-    <>
-      <OfflineIndicator />
+    <AppShell
+      companyName={company.name}
+      userName={user.name}
+      role={user.role}
+    >
       {children}
-    </>
+    </AppShell>
   );
 }

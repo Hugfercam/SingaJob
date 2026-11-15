@@ -180,17 +180,39 @@ SVG escrito a mano para barras, líneas y anillos: cero dependencias, cero JavaS
 
 ## 14. Registro de implementación
 
-- Cambios realizados: ninguno todavía.
-- Desviaciones del plan y motivo: —
+### T-007a — Sistema de diseño y navegación (2026-11-15)
+
+**Hecho:**
+
+- Tokens en `app/globals.css` (`@theme`): papel, tinta, marca, línea, estados, tipografía display/sans, radios.
+- `components/ui/primitives.tsx`: `Button`/`buttonClass`, `Card`, `StatusBadge` (texto **y** color), `Stat`, `SectionTitle`, `EmptyState`, `Field` y `controlClass`.
+- `components/ui/signature.tsx`: `SignatureRule` (subrayado) y `SignatureSeal` (sello animado, respeta `prefers-reduced-motion`).
+- `components/shell/`: `AppShell` (cabecera + navegación inferior en móvil y lateral en escritorio), `Nav` con estado activo y `DensityToggle` (modo obra con `data-density`, guardado en el dispositivo y aplicado antes de pintar).
+- Pantallas migradas: **Hoy** (antes panel), **Partes**, **Clientes**, **/mas** (nueva), **login** y la cabecera de **registro**.
+- El avatar de navegación cambia según el rol: un técnico no ve Clientes.
+
+**Pendiente en T-007b:**
+
+- Dashboard completo: "requiere tu atención", actividad de la semana con gráficas SVG.
+- Migrar a los componentes nuevos las pantallas de ficha de parte, equipo, plantillas, invitación, registro y la home pública (hoy siguen con los estilos anteriores; se ven con la paleta nueva pero no con los componentes).
+- Tabla de pares de contraste documentada y medición de Lighthouse.
+
+**Fallo encontrado y corregido (service worker):** el SW servía `/_next/static` con *cache-first* y un nombre de caché fijo, así que tras un despliegue seguía dando CSS y JS viejos — se vio al revisar el diseño y los cambios no aparecían. Ahora los estáticos son red-primero con copia de respaldo y la versión de caché sube a `v2`, lo que purga las anteriores.
 
 ## 15. Validación (evidencia real)
 
 | Prueba / comando | Resultado | Evidencia / comentario |
 |---|---|---|
-| Pendiente | No ejecutado | — |
+| `npm run lint` | Correcto | Sin avisos |
+| `npm run typecheck` | Correcto | `next typegen` + `tsc --noEmit` |
+| `npm test` | Correcto | 74 pruebas |
+| `npm run build` | Correcto | Compilación completa |
+| Diseño en login | Correcto | Papel cálido, serif en el titular, trazo de firma, controles redondeados y botón en verde de marca (verificado en `localhost`, sin service worker) |
+| Navegación y panel | **No verificado visualmente** | El navegador de pruebas no completó el login (el campo de contraseña se vaciaba en cada reenvío); queda pendiente una revisión manual |
+| Modo obra | **No verificado** | Requiere revisión manual: pulsar "Modo obra" y comprobar que crece la tipografía y los controles |
 
 ## 16. Cierre o continuidad
 
-- Resultado: pendiente de aprobación.
-- Bloqueo: elección de dirección visual (§13).
-- Después: T-008 — landing comercial y textos legales, o lo que aporte más tras el beta.
+- **Resultado:** T-007a entregada (tokens, componentes, navegación y cuatro pantallas). T-007b pendiente.
+- **Bloqueos:** ninguno técnico. Falta la revisión manual del panel y del modo obra.
+- **Siguiente paso:** T-007b — dashboard completo (avisos y gráficas) y migración de las pantallas restantes.

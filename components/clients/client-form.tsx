@@ -2,14 +2,14 @@
 
 import { useActionState } from "react";
 
+import { controlClass } from "@/components/ui/primitives";
 import {
   createClient,
   updateClient,
   type ClientFormState,
 } from "@/lib/clients/actions";
 
-const fieldClass =
-  "rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-900 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+const fieldClass = controlClass;
 
 type Defaults = {
   name?: string;

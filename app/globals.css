@@ -1,1 +1,120 @@
 @import "tailwindcss";
+
+/*
+ * Sistema de diseño de SignaJob — "sello y papel" (D-010).
+ *
+ * Todo color, tipografía y radio sale de aquí. Ninguna pantalla debe usar un
+ * color fuera de estos tokens.
+ */
+@theme {
+  --color-paper: #f7f4ed;
+  --color-surface: #ffffff;
+  --color-ink: #1c1a17;
+  --color-ink-soft: #57534e;
+  --color-line: #e3ded3;
+  --color-brand: #14532d;
+  --color-brand-soft: #dce9e0;
+  --color-ok: #166534;
+  --color-warn: #9a3412;
+  --color-danger: #991b1b;
+
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    "Times New Roman", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --radius-card: 0.875rem;
+  --radius-control: 0.625rem;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Foco propio: visible, consistente y no el del navegador. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-soft);
+    color: var(--color-ink);
+  }
+
+  /* Cifras alineadas en todas las tablas y contadores. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/*
+ * "Modo obra": sube el tamaño base (todo lo que usa rem crece) y los objetivos
+ * táctiles, sin duplicar pantallas. Se activa con data-density en <html>.
+ */
+
+/* Utilidades propias.
+ * Van en CSS plano a propósito: dentro de `@layer utilities` Tailwind 4 las
+ * descarta y los radios no se aplicaban.
+ */
+.tap {
+  min-height: 44px;
+}
+
+/* Valores literales: Tailwind elimina las variables de tema que no usa, y con
+ * var() el radio quedaba en cero. */
+.rounded-card {
+  border-radius: 0.875rem;
+}
+
+.rounded-control {
+  border-radius: 0.625rem;
+}
+
+html[data-density="field"] {
+  font-size: 18px;
+}
+
+html[data-density="field"] .tap {
+  min-height: 56px;
+}
+
+html[data-density="field"] .hide-in-field {
+  display: none;
+}
+
+/* El trazo de firma solo se anima si el usuario no ha pedido lo contrario. */
+.signature-draw {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: sign 900ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes sign {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
