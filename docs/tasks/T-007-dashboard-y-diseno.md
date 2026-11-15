@@ -215,6 +215,12 @@ SVG escrito a mano para barras, líneas y anillos: cero dependencias, cero JavaS
 - **Más densidad visual** (dirección A, aprobada): iconos propios por cifra (`components/ui/icons.tsx`), números más grandes sobre fondo teñido según estado, y gráfica semanal con la semana anterior en gris claro para comparar de un vistazo.
 - El saludo muestra además los partes completados de la semana.
 
+**Pantallas migradas (2026-11-15):**
+
+- **Ficha del parte** rehecha: cabecera con estado, ficha de datos en tarjeta, **progreso con el trazo de firma** (`components/work-orders/status-trail.tsx`), y secciones de campos, fotos, firmas y albarán.
+- **El resto de pantallas** pasa a los tokens con un mapeo explícito (179 sustituciones en 25 archivos): fuera `emerald-*` y `neutral-*`, controles con la clase común y botones con el componente. Verificado que no queda ningún color fuera del sistema.
+- Nuevo `docs/ROADMAP.md` con lo aprobado para después (calendario, métricas, accesibilidad y cuenta).
+
 **Pendiente (siguiente paso):**
 
 - Migrar a los componentes nuevos las pantallas que siguen con los estilos anteriores: ficha de parte, equipo, plantillas, invitación, registro y home pública.
