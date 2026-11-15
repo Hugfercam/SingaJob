@@ -91,24 +91,37 @@ export async function getAttention(
 export type ActivityDay = {
   label: string;
   iso: string;
-  completed: number;
+  current: number;
+  previous: number;
 };
 
-/** Partes completados en los últimos siete días, uno por día. */
+export type WeekSummary = {
+  days: ActivityDay[];
+  currentTotal: number;
+  previousTotal: number;
+  delta: number;
+};
+
+/**
+ * Partes completados en los últimos siete días, con la semana anterior al lado
+ * para poder comparar sin leer cifras.
+ */
 export async function getWeeklyActivity(
   companyId: string,
   viewer: WorkOrderViewer,
-): Promise<ActivityDay[]> {
+): Promise<WeekSummary> {
   const today = new Date();
-  const start = new Date(today.getTime() - 6 * DAY_MS);
-  start.setHours(0, 0, 0, 0);
+  const currentStart = new Date(today.getTime() - 6 * DAY_MS);
+  currentStart.setHours(0, 0, 0, 0);
+
+  const previousStart = new Date(currentStart.getTime() - 7 * DAY_MS);
 
   const rows = await getPrisma().workOrder.findMany({
     where: {
       ...tenantScope(companyId),
       ...viewerFilter(viewer),
       status: "COMPLETED",
-      completedAt: { gte: start },
+      completedAt: { gte: previousStart },
     },
     select: { completedAt: true },
   });
@@ -117,13 +130,13 @@ export async function getWeeklyActivity(
   const days: ActivityDay[] = [];
 
   for (let index = 0; index < 7; index += 1) {
-    const date = new Date(start.getTime() + index * DAY_MS);
-    const iso = date.toISOString().slice(0, 10);
+    const date = new Date(currentStart.getTime() + index * DAY_MS);
 
     days.push({
       label: labels[(date.getDay() + 6) % 7] ?? "",
-      iso,
-      completed: 0,
+      iso: date.toISOString().slice(0, 10),
+      current: 0,
+      previous: 0,
     });
   }
 
@@ -132,13 +145,32 @@ export async function getWeeklyActivity(
       continue;
     }
 
-    const iso = row.completedAt.toISOString().slice(0, 10);
-    const day = days.find((candidate) => candidate.iso === iso);
+    const time = row.completedAt.getTime();
 
+    if (time >= currentStart.getTime()) {
+      const iso = row.completedAt.toISOString().slice(0, 10);
+      const day = days.find((candidate) => candidate.iso === iso);
+      if (day) {
+        day.current += 1;
+      }
+      continue;
+    }
+
+    // Mismo día de la semana, siete días antes.
+    const previousIso = new Date(time + 7 * DAY_MS).toISOString().slice(0, 10);
+    const day = days.find((candidate) => candidate.iso === previousIso);
     if (day) {
-      day.completed += 1;
+      day.previous += 1;
     }
   }
 
-  return days;
+  const currentTotal = days.reduce((sum, day) => sum + day.current, 0);
+  const previousTotal = days.reduce((sum, day) => sum + day.previous, 0);
+
+  return {
+    days,
+    currentTotal,
+    previousTotal,
+    delta: currentTotal - previousTotal,
+  };
 }

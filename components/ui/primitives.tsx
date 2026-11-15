@@ -108,11 +108,13 @@ export function Stat({
   value,
   hint,
   tone = "neutral",
+  icon,
 }: {
   label: string;
   value: string | number;
   hint?: string;
   tone?: Tone;
+  icon?: ReactNode;
 }) {
   const styles: Record<Tone, string> = {
     neutral: "border-line bg-surface",
@@ -127,8 +129,15 @@ export function Stat({
     <div
       className={`flex flex-col gap-1 rounded-card border px-3.5 py-3 ${styles[tone]}`}
     >
-      <span className="text-[11px] leading-tight font-semibold tracking-wider text-ink-soft uppercase">
-        {label}
+      <span className="flex items-center justify-between gap-2">
+        <span className="text-[11px] leading-tight font-semibold tracking-wider text-ink-soft uppercase">
+          {label}
+        </span>
+        {icon ? (
+          <span className="text-ink-soft/70" aria-hidden="true">
+            {icon}
+          </span>
+        ) : null}
       </span>
       <span className={`tabular text-3xl leading-none font-semibold ${valueColor}`}>
         {value}

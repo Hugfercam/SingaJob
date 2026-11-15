@@ -12,6 +12,13 @@ import {
   Stat,
   StatusBadge,
 } from "@/components/ui/primitives";
+import {
+  BuildingIcon,
+  CheckCircleIcon,
+  ClipIcon,
+  ClockIcon,
+  UsersIcon,
+} from "@/components/ui/icons";
 import { getAttention, getWeeklyActivity } from "@/lib/dashboard/queries";
 import { workOrderStatusLabel } from "@/lib/domain/work-orders";
 import { Role, type WorkOrderStatus } from "@/lib/generated/prisma/client";
@@ -65,17 +72,34 @@ export default async function HomePage() {
         </h1>
         <p className="text-sm text-ink-soft">
           {open === 0
-            ? "No tienes trabajos abiertos."
-            : `Tienes ${open} ${open === 1 ? "trabajo abierto" : "trabajos abiertos"}.`}
+            ? "Nada abierto ahora mismo."
+            : `${open} ${open === 1 ? "trabajo abierto" : "trabajos abiertos"}.`}
+          {activity.currentTotal > 0
+            ? ` ${activity.currentTotal} completados esta semana.`
+            : ""}
         </p>
       </header>
 
       <section className="flex flex-col gap-3">
         <SectionTitle>Partes</SectionTitle>
         <div className="grid grid-cols-3 gap-2">
-          <Stat label="En curso" value={counts.inProgress} tone="active" />
-          <Stat label="Pendientes" value={counts.pending} />
-          <Stat label="Completados" value={counts.completed} tone="done" />
+          <Stat
+            label="En curso"
+            value={counts.inProgress}
+            tone="active"
+            icon={<ClockIcon className="size-4" />}
+          />
+          <Stat
+            label="Pendientes"
+            value={counts.pending}
+            icon={<ClipIcon className="size-4" />}
+          />
+          <Stat
+            label="Completados"
+            value={counts.completed}
+            tone="done"
+            icon={<CheckCircleIcon className="size-4" />}
+          />
         </div>
       </section>
 
@@ -89,7 +113,7 @@ export default async function HomePage() {
       <section className="flex flex-col gap-3">
         <SectionTitle>Actividad de la semana</SectionTitle>
         <Card className="px-4 py-3">
-          <WeeklyChart days={activity} />
+          <WeeklyChart summary={activity} />
         </Card>
       </section>
 
@@ -108,8 +132,16 @@ export default async function HomePage() {
             Empresa
           </SectionTitle>
           <div className="grid grid-cols-2 gap-2">
-            <Stat label="Clientes" value={companyTotals.clients} />
-            <Stat label="Obras" value={companyTotals.projects} />
+            <Stat
+              label="Clientes"
+              value={companyTotals.clients}
+              icon={<UsersIcon className="size-4" />}
+            />
+            <Stat
+              label="Obras"
+              value={companyTotals.projects}
+              icon={<BuildingIcon className="size-4" />}
+            />
           </div>
         </section>
       ) : null}
