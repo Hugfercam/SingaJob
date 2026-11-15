@@ -48,3 +48,23 @@ Referencia visual aportada por el usuario (panel de Clove). La intención es
 - Envío del albarán por email (requiere proveedor tipo Resend).
 - Plantillas de ejemplo listas al crear la empresa, para acortar el primer uso.
 - Firma del cliente en el móvil del cliente (enlace público temporal).
+## Añadido el 2026-11-15 (tras probar el MVP)
+
+Cosas que el usuario quiere para después, en el orden en que las mencionó:
+
+- **Ubicación visible para el jefe.** Hoy se guarda dónde se inició y se cerró
+  el parte (y sale en el albarán), pero el administrador no lo ve de un vistazo
+  en el panel. Falta mostrarlo y, si se aprueba, valorar ubicación en vivo.
+- **Notificaciones.** Avisos de parte asignado, parte completado y parte sin
+  firma. Requiere permisos de notificación y un service worker que las reciba.
+- **Plantillas de trabajo.** Ya existen las plantillas de campos; el paso
+  siguiente es partir de ejemplos ya hechos al crear la empresa.
+- **Presupuestos.** Apartado nuevo: presupuesto por obra, aprobación del cliente
+  y conversión en parte. Es la funcionalidad más grande de esta lista.
+- **Fichaje.** Registro de entrada y salida con ubicación, por jornada y
+  técnico. Estuvo en el alcance inicial del proyecto y quedó fuera del MVP.
+- **Animaciones.** Con el diseño ya cerrado, añadir movimiento con propósito
+  (transiciones entre pantallas, el parte que se completa) siempre respetando
+  `prefers-reduced-motion`.
+
+Nada de esto está implementado: es una lista de intenciones aprobadas.
