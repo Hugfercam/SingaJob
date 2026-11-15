@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { LoginForm } from "@/components/auth/login-form";
@@ -12,9 +13,14 @@ export default function LoginPage() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col justify-center gap-6 px-6 py-12">
       <header className="flex flex-col gap-2">
-        <p className="text-xs font-semibold tracking-[0.14em] text-brand uppercase">
-          SignaJob
-        </p>
+        <Image
+          src="/brand/mark.png"
+          alt="SignaJob"
+          width={56}
+          height={56}
+          priority
+          className="size-14"
+        />
         <h1 className="font-display text-3xl leading-tight font-semibold text-ink">
           Entrar
         </h1>

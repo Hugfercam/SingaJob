@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { buttonClass, Card } from "@/components/ui/primitives";
@@ -41,19 +42,16 @@ export default function LandingPage() {
           />
 
           <header className="relative flex items-center justify-between">
-            <p className="flex items-center gap-2 font-display text-xl font-semibold">
-              <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6 text-accent">
-                <path
-                  d="M4 17 10 11l4 4 6-8"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path d="M15 7h5v5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              SignaJob
+            <p className="flex items-center gap-2">
+              <Image
+                src="/brand/mark-light.png"
+                alt=""
+                width={36}
+                height={36}
+                priority
+                className="size-9"
+              />
+              <span className="font-display text-xl font-semibold">SignaJob</span>
             </p>
             <span className="rounded-full border border-paper/25 px-3 py-1 text-[11px] font-semibold tracking-wider uppercase">
               Beta abierta
@@ -470,8 +468,15 @@ export default function LandingPage() {
 
       <footer className="border-t border-line">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-6 py-8 text-xs text-ink-soft sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            SignaJob · signajob.com · Partes de trabajo con firma del cliente.
+          <p className="flex items-center gap-3">
+            <Image
+              src="/brand/mark.png"
+              alt="SignaJob"
+              width={32}
+              height={32}
+              className="size-8"
+            />
+            <span>SignaJob · signajob.com · Partes de trabajo con firma del cliente.</span>
           </p>
           <p className="flex flex-wrap gap-4">
             <Link href="/login" className="underline underline-offset-4">

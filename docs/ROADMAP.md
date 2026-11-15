@@ -5,9 +5,9 @@ sesiones. No es una promesa de fechas: es una lista de intenciones aprobadas.
 
 ## Orden inmediato
 
-1. **Logo y paleta.** El logotipo ya está en `public/brand/` y los iconos PWA
-   regenerados. Falta decidir si la interfaz adopta el azul marino y el turquesa
-   del logo o mantiene el verde actual (decisión pendiente).
+1. ~~**Logo y paleta.**~~ Hecho: paleta del logo aplicada (D-011), logotipo con
+   versiones transparente y clara, e integrado en la landing, el acceso, el
+   registro, la cabecera de la app y los iconos de la PWA.
 2. **T-008 — Landing pública.** Ficha creada en `docs/tasks/T-008-landing.md`.
    Referencia: la landing de otro proyecto del usuario ("e Tierra"). Debe ser
    igual o mejor, con la identidad del producto.

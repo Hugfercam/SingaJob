@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 import { OfflineIndicator } from "@/components/offline/offline-indicator";
 import { DensityToggle } from "@/components/shell/density-toggle";
@@ -41,13 +42,22 @@ export function AppShell({
 
       <header className="sticky top-0 z-10 border-b border-line bg-paper/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5">
-          <div className="min-w-0">
-            <p className="truncate text-xs font-semibold tracking-[0.14em] text-brand uppercase">
-              {companyName}
-            </p>
-            <p className="truncate text-xs text-ink-soft">
-              {userName} · {roleLabel(role)}
-            </p>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <Image
+              src="/brand/mark.png"
+              alt=""
+              width={28}
+              height={28}
+              className="size-7 shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold tracking-[0.14em] text-brand uppercase">
+                {companyName}
+              </p>
+              <p className="truncate text-xs text-ink-soft">
+                {userName} · {roleLabel(role)}
+              </p>
+            </div>
           </div>
 
           <DensityToggle />
