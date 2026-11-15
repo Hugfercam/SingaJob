@@ -69,7 +69,10 @@ export default async function WorkOrdersPage({
         </Link>
       ) : null}
 
-      <nav aria-label="Filtrar por estado" className="-mx-1 flex flex-wrap gap-1.5 px-1">
+      <nav
+        aria-label="Filtrar por estado"
+        className="chips -mx-1 flex flex-wrap gap-1.5 px-1"
+      >
         <Link
           href="/partes"
           aria-current={status ? undefined : "page"}

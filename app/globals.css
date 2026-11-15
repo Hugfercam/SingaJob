@@ -57,21 +57,16 @@
   }
 }
 
-/*
- * "Modo obra": sube el tamaño base (todo lo que usa rem crece) y los objetivos
- * táctiles, sin duplicar pantallas. Se activa con data-density en <html>.
- */
-
 /* Utilidades propias.
- * Van en CSS plano a propósito: dentro de `@layer utilities` Tailwind 4 las
- * descarta y los radios no se aplicaban.
+ * En CSS plano a propósito: dentro de `@layer utilities` Tailwind 4 las
+ * descarta.
  */
 .tap {
   min-height: 44px;
 }
 
-/* Valores literales: Tailwind elimina las variables de tema que no usa, y con
- * var() el radio quedaba en cero. */
+/* Radios con nombre propio. Valores literales: Tailwind elimina las variables
+ * de tema que no usa y con var() el radio quedaba en cero. */
 .rounded-card {
   border-radius: 0.875rem;
 }
@@ -80,15 +75,33 @@
   border-radius: 0.625rem;
 }
 
+/*
+ * "Modo obra": sube el tamaño base (todo lo que usa rem crece) y los objetivos
+ * táctiles, sin duplicar pantallas. Se activa con data-density en <html>.
+ *
+ * 20 px de base (+25 %) y 60 px de alto: con 18 px el cambio se notaba poco y
+ * el modo existe para leer al sol y tocar con guantes.
+ */
 html[data-density="field"] {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 html[data-density="field"] .tap {
-  min-height: 56px;
+  min-height: 60px;
 }
 
 html[data-density="field"] .hide-in-field {
+  display: none;
+}
+
+/* Los filtros, en una sola línea desplazable: así no empujan la lista. */
+html[data-density="field"] .chips {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+html[data-density="field"] .chips::-webkit-scrollbar {
   display: none;
 }
 
