@@ -68,3 +68,18 @@ Cosas que el usuario quiere para después, en el orden en que las mencionó:
   `prefers-reduced-motion`.
 
 Nada de esto está implementado: es una lista de intenciones aprobadas.
+## Repositorio y presentación (2026-11-15)
+
+- **Repositorio subido** a `github.com/Hugfercam/SingaJob` (privado), rama `main`.
+- **README con capturas** (pendiente, pedido por el usuario). Da valor al
+  proyecto de cara a enseñarlo: es lo primero que ve quien entra al
+  repositorio. Cuando se haga:
+  - Capturas en móvil y escritorio de: portada, panel «Hoy», ficha del parte
+    con fotos y firmas, y el albarán en PDF.
+  - Guardadas en `docs/screenshots/` en WebP o PNG optimizado, con un ancho
+    máximo razonable (960 px) para no inflar el repositorio.
+  - Referenciadas desde el README con texto alternativo descriptivo.
+  - Hacerlas **cuando el diseño esté cerrado**: unas capturas desactualizadas
+    valen menos que ninguna.
+- **Integración continua** (propuesta, sin decidir): flujo de GitHub Actions
+  que ejecute `lint`, `typecheck`, pruebas y `build` en cada push.
