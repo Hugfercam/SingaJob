@@ -199,7 +199,39 @@ SVG escrito a mano para barras, líneas y anillos: cero dependencias, cero JavaS
 
 **Fallo encontrado y corregido (service worker):** el SW servía `/_next/static` con *cache-first* y un nombre de caché fijo, así que tras un despliegue seguía dando CSS y JS viejos — se vio al revisar el diseño y los cambios no aparecían. Ahora los estáticos son red-primero con copia de respaldo y la versión de caché sube a `v2`, lo que purga las anteriores.
 
+### T-007b — Dashboard y contraste (2026-11-15)
+
+**Hecho:**
+
+- `lib/dashboard/queries.ts`: avisos accionables (partes sin asignar, en curso desde hace más de 48 h y completados sin firma del cliente) y actividad de los últimos siete días.
+- `components/dashboard/attention-list.tsx`: cada aviso lleva a la lista filtrada donde se resuelve; si no hay nada, la sección no aparece.
+- `components/dashboard/weekly-chart.tsx`: gráfica de barras en SVG a mano, sin librerías ni JavaScript de cliente, con `role="img"` y el resumen de datos en el texto alternativo.
+- **Hoy** rehecha: saludo con contexto, cifras, avisos, actividad de la semana, empresa y últimos partes.
+- Tabla de contraste calculada (§9) con los diez pares de tokens.
+
+**Pendiente (siguiente paso):**
+
+- Migrar a los componentes nuevos las pantallas que siguen con los estilos anteriores: ficha de parte, equipo, plantillas, invitación, registro y home pública.
+- Medición de Lighthouse en el dashboard (requiere ejecutar Chrome con Lighthouse sobre la compilación de producción; no se ha ejecutado).
+
 ## 15. Validación (evidencia real)
+
+### Contraste de los tokens (calculado con la fórmula WCAG 2.2)
+
+| Par | Colores | Ratio | Resultado |
+|---|---|---|---|
+| Tinta sobre papel | `#1C1A17` / `#F7F4ED` | 15,81:1 | AA |
+| Tinta suave sobre papel | `#57534E` / `#F7F4ED` | 6,95:1 | AA |
+| Marca sobre papel | `#14532D` / `#F7F4ED` | 8,29:1 | AA |
+| Papel sobre marca (botón) | `#F7F4ED` / `#14532D` | 8,29:1 | AA |
+| Marca sobre marca suave (navegación activa) | `#14532D` / `#DCE9E0` | 7,28:1 | AA |
+| Tinta suave sobre tarjeta | `#57534E` / `#FFFFFF` | 7,63:1 | AA |
+| Aviso sobre papel | `#9A3412` / `#F7F4ED` | 6,65:1 | AA |
+| Peligro sobre papel | `#991B1B` / `#F7F4ED` | 7,57:1 | AA |
+| Blanco sobre aviso (contador) | `#FFFFFF` / `#9A3412` | 7,31:1 | AA |
+| Tinta suave sobre línea (etiqueta neutra) | `#57534E` / `#E3DED3` | 5,69:1 | AA |
+
+Ningún par baja de 4,5:1, así que no hay que tocar la paleta.
 
 | Prueba / comando | Resultado | Evidencia / comentario |
 |---|---|---|
