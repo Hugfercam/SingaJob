@@ -1,6 +1,6 @@
 # T-008 — Landing pública de SignaJob
 
-- **Estado:** Aprobación pendiente
+- **Estado:** En curso — primera versión publicable
 - **Prioridad:** Alta
 - **Fecha de creación:** 2026-11-15
 - **Última actualización:** 2026-11-15
@@ -88,16 +88,36 @@ Hoy la raíz del dominio es una pantalla de entrada. Quien llega desde un enlace
 
 ## 10. Registro de implementación
 
-- Cambios realizados: ninguno todavía.
-- Desviaciones del plan y motivo: —
+**Primera versión (2026-11-15):**
+
+- Landing completa en `app/page.tsx`, con la estructura de la referencia de "Tierras" adaptada a nuestra identidad: panel marino partido con titular serif y cursiva turquesa, albarán real como pieza visual, y panel de acción en papel.
+- Secciones: problema, tres pasos, la firma, sin cobertura, para quién sí y no, cinco preguntas frecuentes con `<details>` (sin JavaScript), cierre y pie.
+- **Decisión: página estática.** La primera versión consultaba la sesión para cambiar el botón; Next lo bloqueó con razón ("uncached data during prerendering"), así que la portada ya no lee sesión y se prerenderiza (`○ /`). La entrada vive en el botón secundario y en el pie.
+- **Sin precio:** al estar en beta, el bloque de precio se sustituye por el mensaje de beta gratuita y la promesa de avisar antes de cobrar (también en las preguntas frecuentes).
+- Movimiento con CSS y el trazo de firma (`signature-draw`), que respeta `prefers-reduced-motion`. Cero librerías de animación y cero JavaScript de cliente.
+- Metadatos: título, descripción, canónica y Open Graph con `signajob.com`.
+
+**Pendiente antes de publicar:**
+
+- **Páginas legales** (aviso legal y privacidad): el pie lo dice y hay que redactarlas con los datos fiscales reales.
+- **Imagen de tarjeta social** (Open Graph) propia.
+- Revisión en móvil real.
+- Lighthouse y presupuesto de rendimiento medidos.
+- `sitemap.xml` y `robots.txt`.
 
 ## 11. Validación (evidencia real)
 
 | Prueba / comando | Resultado | Evidencia / comentario |
 |---|---|---|
-| Pendiente | No ejecutado | — |
+| `npm run lint` | Correcto | Sin avisos |
+| `npm run typecheck` | Correcto | — |
+| `npm run build` | Correcto | **`○ /`**: la portada se prerenderiza |
+| Consola del navegador | Correcto | Sin el aviso de prerenderizado tras hacerla estática |
+| Revisión visual (escritorio) | Correcto | Paneles, secciones, preguntas y cierre comprobados con capturas |
+| Revisión en móvil | **No verificada** | No hay control de tamaño de ventana en las herramientas; falta abrirla en un móvil |
+| Lighthouse | **No ejecutado** | Pendiente |
 
 ## 12. Cierre o continuidad
 
-- Resultado: pendiente de aprobación y de la referencia.
-- Bloqueo: falta ver la landing de "e Tierra" y decidir la paleta definitiva (ver T-007 §4 y D-010).
+- Resultado: primera versión lista para enseñar; **no publicar** hasta tener aviso legal y privacidad.
+- Siguiente paso: textos legales, imagen social y medición.

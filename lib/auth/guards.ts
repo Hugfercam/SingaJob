@@ -18,6 +18,7 @@ export async function requireSession(): Promise<AuthContext> {
   return auth;
 }
 
+
 /**
  * Exige sesión y uno de los roles indicados. Si el rol no alcanza, devuelve al
  * panel en lugar de a login: el usuario sí está autenticado, lo que no tiene es
