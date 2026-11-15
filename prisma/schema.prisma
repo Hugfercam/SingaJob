@@ -1,0 +1,50 @@
+// Esquema de datos de SignaJob.
+// Documentación: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  TECHNICIAN
+}
+
+// Empresa cliente del SaaS. Es la raíz del aislamiento multi-tenant:
+// toda consulta de negocio debe filtrar por companyId.
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  cif       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+
+  @@map("companies")
+}
+
+// Usuario de una empresa. El email es único dentro de cada empresa,
+// no globalmente: dos empresas distintas pueden compartir el mismo email.
+model User {
+  id        String   @id @default(cuid())
+  companyId String
+  email     String
+  name      String
+  role      Role     @default(TECHNICIAN)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, email])
+  @@index([companyId])
+  @@map("users")
+}
